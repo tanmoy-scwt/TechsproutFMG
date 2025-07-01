@@ -76,9 +76,13 @@ import { FaUser } from "react-icons/fa";
 import { usePathname, useRouter } from 'next/navigation';
 import { dashboardLinks as dl } from "@/lib/constants";
 
+interface StepsIndicatorProps {
+    subscriptionTaken: string | undefined;
+    ifAnyCourseExists: string | undefined;
+}
 
 
-const StepIndicator = ({ ifAnyCourseExists }: { ifAnyCourseExists: string | undefined }) => {
+const StepIndicator = ({ ifAnyCourseExists, subscriptionTaken }: StepsIndicatorProps) => {
     const pathname = usePathname();
     const router = useRouter();
     const [activePage, setActivePage] = useState(1);
@@ -114,8 +118,18 @@ const StepIndicator = ({ ifAnyCourseExists }: { ifAnyCourseExists: string | unde
                     <>
                         <div key={index} className={styles.stepWrapper}>
                             <div className={styles.stepInner}>
-                                <div
+                                {/* <div
                                     className={`${styles.stepCircle} ${isActive ? styles.active : ''}`}
+                                    onClick={handleClick}
+                                    style={{ cursor: isActive ? 'pointer' : 'default' }}
+                                > */}
+                                <div
+                                    className={`${styles.stepCircle} ${(index === 0 && isActive) ||
+                                        (index === 1 && ifAnyCourseExists === "true" && isActive) ||
+                                        (index === 2 && subscriptionTaken === "true" && isActive)
+                                        ? styles.active
+                                        : ''
+                                        }`}
                                     onClick={handleClick}
                                     style={{ cursor: isActive ? 'pointer' : 'default' }}
                                 >

@@ -53,7 +53,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
             <main className="dash-nav__main">
                {subscriptionTaken === "false" && (
                   <div className="pds mb-4">
-                     <StepIndicator ifAnyCourseExists={ifAnyCourseExists} />
+                     <StepIndicator ifAnyCourseExists={ifAnyCourseExists} subscriptionTaken={subscriptionTaken} />
                   </div>
                )}
                {children}
