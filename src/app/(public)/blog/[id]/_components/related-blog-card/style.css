@@ -1,0 +1,27 @@
+.rb-card {
+   --img-width: 80px;
+   display: grid;
+   grid-template-columns: var(--img-width, 80px) 1fr;
+   align-items: center;
+   gap: 15px;
+}
+.rb-card__img {
+   width: var(--img-width);
+   aspect-ratio: 1;
+   object-fit: cover;
+   border-radius: 4px;
+}
+.rb-card__title {
+   font-size: var(--font-normal);
+   font-weight: 600;
+   color: var(--color-text-300);
+   transition: 0.3s all ease;
+   display: -webkit-box;
+   line-clamp: 3;
+   -webkit-line-clamp: 3;
+   -webkit-box-orient: vertical;
+   overflow: hidden;
+}
+.rb-card:hover .rb-card__title {
+   color: black;
+}

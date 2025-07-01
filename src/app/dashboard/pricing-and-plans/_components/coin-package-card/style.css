@@ -1,0 +1,120 @@
+.cpc {
+   text-align: center;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: space-between;
+   gap: 10px;
+   background-color: white;
+   box-shadow: 0px 4px 30px 0px #0000000d;
+   border: 2px solid #eaeaea;
+   border-radius: 8px;
+   padding-inline: var(--pm-100);
+   padding-block: 45px var(--pm-150);
+   position: relative;
+}
+.cpc__container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 8px;
+}
+
+.cpc__price {
+   font-size: var(--font-md);
+   font-weight: 700;
+   color: var(--color-text-350);
+   text-align: center;
+}
+.cpc__highlight-text {
+   font-size: var(--font-normal);
+   color: var(--color-primary);
+   font-weight: 600;
+   text-align: center;
+}
+.cpc__highlight-text.sm {
+   font-size: var(--font-sm);
+   font-weight: 500;
+}
+.cpc__list {
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+   font-size: var(--font-xs);
+   font-weight: 500;
+   color: var(--color-text-300);
+   margin-block: var(--pm-075);
+}
+.cpc__list li {
+   display: flex;
+   gap: 5px;
+}
+.cpc__list li svg {
+   min-width: 18px;
+   margin-top: 2.5px;
+}
+.cpc__list li.active svg {
+   color: var(--color-primary);
+}
+.cpc__list li.deactive {
+   color: #9ea4b2;
+}
+.cpc__list li span {
+   flex: 1;
+}
+.cpc__button {
+   background-color: var(--color-purple);
+   margin-top: var(--pm-075);
+   outline-offset: 2px;
+}
+
+.cpc__popular {
+   position: absolute;
+   left: -2px;
+   top: 15px;
+}
+.cpc__popular p {
+   position: relative;
+   font-size: 0.8rem;
+   isolation: isolate;
+   color: white;
+   padding-inline: var(--pm-100);
+}
+.cpc__popular p::after {
+   position: absolute;
+   content: "";
+   width: 100%;
+   height: auto;
+   aspect-ratio: 3;
+   right: 0;
+   top: 50%;
+   transform: translateY(-50%);
+   background-image: url(/img/icons/ribbon-cropped.svg);
+   background-repeat: no-repeat !important;
+   background-position: center center;
+   background-size: contain;
+   z-index: -1;
+   color: var(--color-purple);
+}
+
+.plandesc li::before {
+   content: "✔ "; /* Unicode checkmark */
+   color: green; /* Change color if needed */
+   font-weight: bold;
+   margin-right: 5px;
+}
+
+@media only screen and (min-width: 848px) {
+   .cpc__price {
+      font-size: var(--font-lg);
+   }
+   .cpc__list {
+      font-size: var(--font-normal);
+   }
+}
+
+@supports (font-size: clamp(var(--font-lg), 4vw, --font-lg)) {
+   .cpc__price {
+      font-size: clamp(var(--font-md), 4vw, var(--font-lg));
+   }
+}

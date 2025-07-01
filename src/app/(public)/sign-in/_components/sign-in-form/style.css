@@ -1,0 +1,41 @@
+.si-form__container {
+   display: flex;
+   flex-direction: column;
+   gap: 25px;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   padding-block: var(--pm-150);
+}
+.si-form {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+   width: 100%;
+}
+.si-form__input--container {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+.si-form__recover--container {
+   margin-bottom: var(--pm-075);
+   display: flex;
+   justify-content: flex-end;
+}
+.si-form__recover {
+   color: #ca2706;
+   font-size: var(--font-xs);
+   font-weight: 500;
+   transition: 0.2s all ease;
+}
+.si-form__recover:hover {
+   color: #ec3b17;
+}
+.forget {
+   top: -111px;
+   position: relative;
+   width: 100%;
+   display: flex;
+   justify-content: end;
+}

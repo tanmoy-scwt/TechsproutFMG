@@ -1,0 +1,105 @@
+.wts__container {
+   --pm: 40px;
+   --pm-negative: -40px;
+   background-color: #00b0f2;
+   display: grid;
+   gap: 20px;
+   padding-block: var(--pm);
+   border-radius: 4px;
+}
+.wts__image {
+   width: 100%;
+   max-width: 400px;
+   height: auto;
+   justify-self: center;
+   align-self: center;
+   flex: 1;
+   display: flex;
+   position: relative;
+   margin-bottom: var(--pm-negative);
+}
+.wts__image img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+}
+.wts__badge {
+   background-color: black;
+   color: white;
+   position: absolute;
+   right: 10px;
+   top: 10%;
+   padding: var(--pm-025) var(--pm-050);
+   border-radius: 4px;
+   font-size: var(--font-xs);
+   font-weight: 500;
+   letter-spacing: 0.25px;
+}
+.wts__title,
+.wts__description,
+.wts__web-text {
+   color: white;
+}
+.wts__description {
+   font-size: var(--font-normal);
+   font-weight: 600;
+}
+.wts__text {
+   font-size: 0.8rem;
+   color: var(--color-purple-light);
+   font-weight: 600;
+}
+.wts__text span {
+   font-weight: 400;
+}
+.wts__content--container {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+   flex: 1;
+}
+.wts__info--container {
+   display: grid;
+   gap: 25px;
+   row-gap: 15px;
+   padding-top: var(--pm-100);
+}
+@media only screen and (min-width: 365px) {
+   .wts__info--container {
+      grid-template-columns: auto 1fr;
+   }
+}
+@media only screen and (min-width: 565px) {
+   .wts__info--container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+   }
+}
+@media only screen and (min-width: 848px) {
+   .wts__container {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 75px;
+   }
+   .wts__info--container {
+      padding-block: var(--pm-150);
+   }
+   .wts__image {
+      grid-column: 1/2;
+      grid-row: 1/2;
+   }
+   .wts__content--container {
+      grid-column: 2/3;
+      grid-row: 1/2;
+   }
+   .wts__description {
+      font-size: var(--font-md);
+   }
+}
+
+@supports (font-size: clamp(var(--font-normal), 3vw, var(--font-md))) {
+   .wts__description {
+      font-size: clamp(var(--font-normal), 2vw, var(--font-md));
+   }
+}

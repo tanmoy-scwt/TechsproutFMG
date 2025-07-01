@@ -1,0 +1,117 @@
+.mr__input {
+   display: flex;
+   flex-direction: column;
+   gap: 7px;
+}
+.mr-input__container {
+   position: relative;
+   height: 20px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.mr__input--values {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   flex-wrap: nowrap;
+}
+.mr-input__slider {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   top: 50%;
+   transform: translateY(-50%);
+   border-radius: 8px;
+   overflow: hidden;
+}
+
+.mr-input__slider--track,
+.mr-input__slider--range {
+   position: absolute;
+}
+
+.mr-input__slider--track,
+.mr-input__slider--range {
+   border-radius: 3px;
+   height: 8px;
+   top: 50%;
+   transform: translateY(-50%);
+}
+
+.mr-input__slider--track {
+   background-color: #ced4da;
+   width: 100%;
+   z-index: 1;
+}
+
+.mr-input__slider--range {
+   background-color: var(--color-primary);
+   z-index: 2;
+}
+
+.mr-input__slider--left-value,
+.mr-input__slider--right-value {
+   font-size: 14px;
+   font-weight: 600;
+   color: #4a4a4a;
+}
+
+/* Removing the default appearance */
+.mr-input__thumb,
+.mr-input__thumb::-webkit-slider-thumb {
+   -webkit-appearance: none;
+}
+
+.mr-input__thumb {
+   pointer-events: none;
+   position: absolute;
+   height: 0;
+   width: 100%;
+   outline: none;
+   top: 50%;
+}
+
+.mr-input__thumb--left {
+   z-index: 3;
+   left: 0;
+}
+
+.mr-input__thumb--right {
+   z-index: 4;
+   right: 0;
+}
+
+/* For Chrome browsers */
+.mr-input__thumb::-webkit-slider-thumb {
+   background-color: var(--color-primary);
+   border: 1px solid white;
+   border-radius: 50%;
+   cursor: pointer;
+   height: 18px;
+   width: 18px;
+   pointer-events: all;
+   position: relative;
+}
+
+/* For Firefox browsers */
+.mr-input__thumb::-moz-range-thumb {
+   background-color: var(--color-primary);
+   border: 1px solid white;
+   border-radius: 50%;
+   cursor: pointer;
+   height: 18px;
+   width: 18px;
+   pointer-events: all;
+   position: relative;
+}
+
+.mr-input__thumb.focus::-webkit-slider-thumb {
+   background-color: white;
+   border: 1px solid var(--color-primary);
+}
+
+.mr-input__thumb.focus::-moz-range-thumb {
+   background-color: white;
+   border: 1px solid var(--color-primary);
+}

@@ -1,0 +1,20 @@
+.osi-form__container {
+   display: flex;
+   flex-direction: column;
+   gap: 25px;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   padding-block: var(--pm-150);
+}
+.osi-form {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+   width: 100%;
+}
+.osi-form__input--container {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}

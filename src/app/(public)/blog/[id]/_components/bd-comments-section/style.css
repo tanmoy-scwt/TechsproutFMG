@@ -1,0 +1,27 @@
+.bdcs__section {
+   display: grid;
+   align-items: center;
+}
+.bdcs__title {
+   font-size: var(--font-xl);
+   font-weight: 700;
+   color: var(--color-text-300);
+   line-height: 1.5;
+   font-size: clamp(var(--font-xl), 4vw, var(--font-2xl));
+   text-align: center;
+}
+.bdcs__comments--container {
+   grid-row: 2/3;
+}
+@media only screen and (min-width: 480px) {
+   .bdcs__section {
+      grid-template-columns: 1fr auto;
+   }
+   .bdcs__title {
+      font-size: var(--font-2xl);
+      text-align: left;
+   }
+   .bdcs__comments--container {
+      grid-column: 1/3;
+   }
+}

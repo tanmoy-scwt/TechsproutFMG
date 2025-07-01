@@ -1,0 +1,26 @@
+.chq__container {
+   display: flex;
+   flex-direction: column;
+   gap: 25px;
+}
+.chq__iframe--container {
+   display: flex;
+   flex-direction: column-reverse;
+   gap: 35px;
+}
+
+@media only screen and (min-width: 848px) {
+   .chq__iframe--container {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+   }
+   .chq__map-iframe {
+      aspect-ratio: 9 / 16 !important;
+      max-height: 435px;
+   }
+}
+@media only screen and (min-width: 1080px) {
+   .chq__iframe--container {
+      gap: 75px;
+   }
+}

@@ -1,0 +1,80 @@
+.ppts__section {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+.ppts__title--container {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+.ppts__section h1 {
+   flex: 1;
+}
+.ppts__coins--container {
+   display: flex;
+   align-items: center;
+   flex-direction: row;
+   gap: 10px;
+}
+.ppts__coins--image {
+   width: 100%;
+   max-width: 40px;
+   height: auto;
+   aspect-ratio: 1.25;
+   object-fit: contain;
+}
+.fixed h4 {
+    margin-bottom: 0px !important;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 30px;
+    padding-right: 20px;
+}
+.close_btn {
+    padding: 0 !important;
+    margin-top: 0 !important;
+}
+.fixed p {
+    font-size: 16px;
+    line-height: 25px;
+    margin-bottom: 15px !important;
+    margin-top: 0 !important;
+}
+.fixed ul {
+    margin-bottom: 15px !important;
+    list-style: disc !important;
+}
+.fixed ul li{
+    list-style: disc !important;
+}
+.coin-popup {
+    background-color: var(--color-purple);
+    color: white;
+    border: 1px solid transparent;
+    padding: 5px 15px;
+    border-radius: 5px;
+    margin: 15px;
+    font-size: 15px;
+    line-height: 25px;
+    text-align: center;
+    transition: all 0.3sease-in-out;
+}
+.coin-popup:hover{
+    background-color: white;
+    color: var(--color-purple);
+    border:1px solid var(--color-purple);
+}
+.ppts__coins--container .label {
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   max-width: 100%;
+}
+@media only screen and (min-width: 360px) {
+   .ppts__section {
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 5px;
+   }
+}

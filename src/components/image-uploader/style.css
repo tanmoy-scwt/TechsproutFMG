@@ -1,0 +1,24 @@
+.image-uploader {
+   border: 2px solid #eaeaea;
+   border-radius: 6px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   max-width: 512px;
+   aspect-ratio: 16/9;
+   overflow: hidden;
+   position: relative;
+   cursor: pointer;
+}
+.image-uploader__input {
+   display: none;
+}
+.image-uploader .select-icon {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   background-color: white;
+   padding: 5px;
+   border-radius: 50%;
+}

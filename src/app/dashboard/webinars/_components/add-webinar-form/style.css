@@ -1,0 +1,46 @@
+.aweb__form {
+   display: flex;
+   flex-direction: column;
+   gap: 35px;
+}
+.aweb__form--container {
+   display: flex;
+   flex-direction: column;
+   gap: 25px;
+}
+.aweb__form--items {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+.aweb__form--buttons {
+   display: flex;
+   flex-direction: column-reverse;
+   gap: 10px;
+}
+.aweb__form--buttons button {
+   border-radius: 6px;
+   padding: var(--pm-050) var(--pm-100);
+   font-size: var(--font-sm);
+   font-weight: 600;
+   border: 2px solid var(--color-primary-light);
+   width: 100%;
+}
+@media only screen and (min-width: 648px) {
+   .aweb__form--container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+   }
+   .aweb__form--buttons {
+      flex-direction: row;
+   }
+   .aweb__form--buttons button {
+      width: max-content;
+   }
+}
+
+@media only screen and (min-width: 1080px) {
+   .aweb__form--container {
+      grid-template-columns: repeat(3, 1fr);
+   }
+}

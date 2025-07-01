@@ -1,0 +1,27 @@
+.cuf__form {
+   display: flex;
+   flex-direction: column;
+   gap: 25px;
+}
+.cuf__input--container {
+   display: grid;
+   gap: 20px;
+}
+.cuf__input--container .error {
+   margin-top: var(--pm-050);
+}
+.cuf__form .button__primary {
+   white-space: nowrap;
+}
+@media only screen and (min-width: 1080px) {
+   .cuf__input--container {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+   }
+   .cuf__input--container .cuf__textarea--container {
+      grid-column: span 3;
+   }
+   .cuf__form .button__primary {
+      max-width: max-content;
+   }
+}

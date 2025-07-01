@@ -1,0 +1,295 @@
+.home__hero-section {
+   background-image: url(/img/common/bg-gradient-op.webp);
+   background-size: cover;
+   margin-top: -125px;
+   padding-block: 165px 40px;
+}
+.home__hero-container {
+   display: grid;
+   grid-template-columns: 1fr;
+   row-gap: 20px;
+   column-gap: 35px;
+}
+.home__hero-title {
+   grid-row: 1/2;
+   text-align: center;
+}
+.home__hero-search {
+   grid-row: 2/3;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: flex-end;
+}
+.home__hero-image--container {
+   grid-row: 3/4;
+   position: relative;
+}
+.home__hero-stat {
+   grid-row: 4/5;
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   row-gap: 8px;
+}
+
+.home__hero-search p {
+   position: relative;
+   margin-left: 53%;
+   margin-bottom: var(--pm-225);
+}
+
+.home__hero-search p::before {
+   content: url("/img/icons/curve-arrow.svg");
+   position: absolute;
+   width: 34px;
+   height: 34px;
+   object-fit: contain;
+   top: 25%;
+   left: -30%;
+   animation: upDown 2s infinite linear;
+}
+.home__hero-image {
+   width: 100%;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.home__hero-image img {
+   width: 100%;
+   max-width: 420px;
+   height: 100%;
+   object-fit: cover;
+}
+.home__hero-stat p {
+   border-left: 2px solid var(--color-text-100);
+   padding-inline: var(--pm-075);
+   font-size: 11px;
+   font-weight: 500;
+   color: var(--color-text-100);
+}
+.home__hero-stat p:first-child {
+   border-left-color: transparent;
+}
+
+.home__hero-stat p span.highlight {
+   font-size: var(--font-xl);
+   font-weight: 600;
+}
+.home__hero-floating-card--container {
+   position: absolute;
+   inset: 0;
+}
+.home__hero-floating-card {
+   background-color: white;
+   border-radius: 32px;
+   box-shadow: 0px 5.75px 28.76px 0px #0000001a;
+   padding: var(--pm-125) var(--pm-100) var(--pm-075) var(--pm-150);
+   width: 123px;
+   min-height: 100px;
+   position: relative;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: 0.3s all ease;
+}
+.home__hero-floating-card img {
+   position: absolute;
+}
+.home__hero-floating-card img.right {
+   right: -3px;
+   top: -20%;
+}
+.home__hero-floating-card img.right-in {
+   right: 2px;
+   top: -20%;
+}
+.home__hero-floating-card img.left {
+   left: -15px;
+   top: -20%;
+}
+.home__hero-floating-card p {
+   font-size: var(--font-xs);
+   font-weight: 700;
+   color: #02679b;
+}
+.home__hero-floating-card.card-1 {
+   left: 0;
+   top: 20%;
+   transform: rotate(-18deg);
+}
+.home__hero-floating-card.card-1:hover {
+   top: 18%;
+}
+.home__hero-floating-card.card-2 {
+   position: absolute;
+   right: 0;
+   top: 50%;
+}
+.home__hero-floating-card.card-2:hover {
+   top: 48%;
+}
+.home__hero-floating-card.card-3 {
+   left: 0;
+   bottom: 0;
+   transform: rotate(8deg);
+   position: absolute;
+}
+.home__hero-floating-card.card-3:hover {
+   bottom: 2%;
+}
+@media only screen and (min-width: 360px) {
+   .home__hero-stat {
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+   }
+}
+@media only screen and (min-width: 576px) {
+   .home__hero-search {
+      align-items: center;
+   }
+   .home__hero-floating-card.card-1 {
+      left: 10%;
+   }
+   .home__hero-floating-card.card-2 {
+      right: 10%;
+   }
+   .home__hero-floating-card.card-3 {
+      left: 10%;
+   }
+   .home__hero-stat p {
+      padding-inline: var(--pm-125);
+   }
+   .home__hero-stat p:first-child {
+      padding-left: 0;
+   }
+   .home__hero-floating-card {
+      padding: var(--pm-125) var(--pm-200);
+      width: 148px;
+      min-height: 93px;
+   }
+}
+@media only screen and (min-width: 848px) {
+   .home__hero-container {
+      /* grid-template-columns: 1fr 1fr; */
+      grid-template-rows: auto 0.85fr auto;
+      justify-content: space-between;
+   }
+   .home__hero-title {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+      text-align: left;
+   }
+   .home__hero-search {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+   }
+   .home__hero-stat {
+      grid-column: 1 / 2;
+      grid-row: 3 / 4;
+   }
+   .home__hero-image--container {
+      grid-column: 2 / 3;
+      grid-row: 1 / 4;
+   }
+
+   .home__hero-floating-card.card-1 {
+      left: -10%;
+   }
+   .home__hero-floating-card.card-2 {
+      right: 0;
+   }
+   .home__hero-floating-card.card-3 {
+      left: 0;
+   }
+}
+
+/*ANIMATIONS*/
+@keyframes upDown {
+   0% {
+      top: 15%;
+   }
+   20% {
+      top: 45%;
+   }
+   80% {
+      top: 45%;
+   }
+   100% {
+      top: 15%;
+   }
+}
+
+.wrapper_icon_phone {
+   position: fixed; /* Fix to the screen */
+   top: 90%;
+   left: 98%; /* Center horizontally */
+   transform: translate(-50%, -50%); /* Center vertically and horizontally */
+   z-index: 9999; /* Ensure it stays above everything else */
+}
+
+.wrapper_icon_phone ul {
+   list-style: none;
+   padding: 0;
+   margin: 0;
+}
+
+.wrapper_icon_phone ul li {
+   width: 50px;
+   height: 50px;
+   position: relative;
+   background: #e59500;
+   margin: 10px;
+   cursor: pointer;
+   border-radius: 5%;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.wrapper_icon_phone ul li.Phone {
+   background: #3598db;
+}
+
+.wrapper_icon_phone .slider {
+   content: "";
+   position: absolute;
+   top: 0;
+   right: 51px; /* Adjust to ensure it is beside the button */
+   width: 0px;
+   height: 50px;
+   background: #18140d;
+   border-radius: 3px;
+   transition: all 0.5s ease;
+   z-index: 10000; /* Ensure slider is above the button */
+}
+
+.wrapper_icon_phone .slider p {
+   text-transform: uppercase;
+   font-size: 16px;
+   font-weight: 900;
+   color: #fff;
+   text-align: center;
+   line-height: 50px;
+   opacity: 0;
+   transition: all 0.6s ease;
+}
+
+.wrapper_icon_phone ul li:hover .slider {
+   width: 180px;
+}
+
+.wrapper_icon_phone ul li:hover .slider p {
+   opacity: 1;
+   transition: all 1s 0.2s ease;
+}
+@media only screen and (max-width: 1200px) {
+   .wrapper_icon_phone {
+      position: fixed;
+      top: 90%;
+      left: 93%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+   }
+}

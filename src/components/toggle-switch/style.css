@@ -1,0 +1,51 @@
+.toggle-switch {
+   --width: 50px;
+   width: var(--width);
+   height: auto;
+   aspect-ratio: 2;
+   border-radius: 50px;
+   box-shadow: 0px 0px 2px #808080;
+   position: relative;
+}
+.toggle-switch__input {
+   opacity: 0;
+   width: 0;
+   height: 0;
+}
+.toggle-switch__label {
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   background-color: #0e5c98;
+   border-radius: 50px;
+   cursor: pointer;
+   inset: 0;
+   border: 2px solid #0e5c98;
+   outline: 2px solid transparent;
+   transition: 0.5s all ease, 0s outline ease;
+}
+.toggle-switch__input:focus-visible + .toggle-switch__label {
+   outline: 2px solid black;
+}
+.toggle-switch__input:checked + .toggle-switch__label {
+   background-color: #1b9acf;
+   border: 2px solid #1b9acf;
+}
+.toggle-switch__button {
+   display: block;
+   background-color: white;
+   box-shadow: 0px 0px 3px 3px #00000010;
+   border-radius: 50%;
+   height: 100%;
+   width: auto;
+   aspect-ratio: 1;
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
+   transition: 0.15s all linear;
+   left: 0;
+}
+.toggle-switch__input:checked + .toggle-switch__label > .toggle-switch__button {
+   left: 100%;
+   transform: translate(-100%, -50%);
+}

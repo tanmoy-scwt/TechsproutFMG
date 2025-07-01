@@ -1,0 +1,17 @@
+.pass-input {
+   position: relative;
+}
+.pass-input__input {
+   padding-right: 40px !important;
+}
+.pass-input__img--container {
+   position: absolute;
+   z-index: 2;
+   right: 10px;
+   top: 50%;
+   transform: translateY(-50%);
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}

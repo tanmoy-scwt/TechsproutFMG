@@ -1,0 +1,21 @@
+.cd__section {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+
+.cd__ratings {
+   display: flex;
+   flex-wrap: wrap;
+   align-items: center;
+   column-gap: 15px;
+   row-gap: 3px;
+   line-height: 1.75;
+}
+.cd__ratings-stars {
+   display: flex;
+   flex-wrap: wrap;
+   align-items: center;
+   column-gap: 15px;
+   row-gap: 3px;
+}

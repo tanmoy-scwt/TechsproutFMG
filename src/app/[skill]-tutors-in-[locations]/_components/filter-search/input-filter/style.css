@@ -1,0 +1,14 @@
+.in-filter {
+   position: relative;
+}
+.in-filter input {
+   padding-left: 54px;
+   width: 100%;
+   /* max-width: 536px; */
+}
+.in-filter img {
+   position: absolute;
+   left: var(--pm-150);
+   top: 50%;
+   transform: translateY(-50%);
+}

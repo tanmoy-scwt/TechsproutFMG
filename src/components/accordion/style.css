@@ -1,0 +1,48 @@
+.accordion-item {
+   border-bottom: 1.5px solid #e7e7e7;
+}
+.accordion-trigger {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   gap: 15px;
+   background-color: white;
+   color: var(--color-primary);
+   font-size: var(--font-md);
+   font-weight: 600;
+   letter-spacing: 0.25px;
+   user-select: none;
+   cursor: pointer;
+   padding: var(--pm-150) var(--pm-075);
+}
+.accordion-trigger__img {
+   transform: rotate(-45deg);
+   transition: 0.2s all linear;
+   width: 24px;
+   height: auto;
+}
+.accordion-trigger__img.active {
+   transform: rotate(0deg);
+}
+
+.accordion-content__outer {
+   overflow: hidden;
+   transition: 0.3s height linear;
+   background-color: white;
+}
+.accordion-content__inner {
+   padding-block: var(--pm-025) var(--pm-150);
+   padding-inline: var(--pm-075);
+   font-size: var(--font-sm);
+   color: var(--color-text-250);
+   font-weight: 500;
+}
+
+@media only screen and (min-width: 680px) {
+   .accordion-trigger {
+      font-size: var(--font-lg);
+   }
+   .accordion-content__inner {
+      font-size: var(--font-normal);
+   }
+}

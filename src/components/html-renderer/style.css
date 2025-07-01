@@ -1,0 +1,111 @@
+.html-renderer__section {
+   margin-top: 10px;
+   margin-bottom: 40px;
+}
+#html-renderer {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+#html-renderer h2 {
+   font-size: var(--font-xl);
+   font-weight: 700;
+   color: var(--color-text-350);
+   line-height: 1.5;
+   margin-top: 24px;
+   font-size: clamp(var(--font-xl), 4vw, var(--font-2xl));
+}
+
+#html-renderer.html-renderer__before h2 {
+   --gap-before: 20px;
+   --gap-before-minus: -20px;
+   position: relative;
+   margin-left: var(--gap-before);
+}
+#html-renderer.html-renderer__before h2::before {
+   content: "";
+   position: absolute;
+   height: 100%;
+   width: 8px;
+   left: var(--gap-before-minus);
+   background-color: var(--color-primary);
+}
+
+#html-renderer.html-renderer__before h2:nth-of-type(3n + 1)::before {
+   background-color: #4a66be;
+}
+#html-renderer.html-renderer__before h2:nth-of-type(3n + 2)::before {
+   background-color: #9b00ff;
+}
+#html-renderer.html-renderer__before h2:nth-of-type(3n + 3)::before {
+   background-color: #00b0f2;
+}
+
+#html-renderer h3 {
+   font-size: var(--font-md);
+   font-size: clamp(var(--font-md), 4vw, var(--font-xl));
+}
+#html-renderer p,
+#html-renderer li {
+   font-weight: 400;
+   line-height: 1.75;
+   color: var(--color-text-300);
+   letter-spacing: 0.25px;
+   font-size: var(--font-sm);
+   font-size: clamp(var(--font-sm), 4vw, var(--font-normal));
+}
+#html-renderer ul,
+#html-renderer ol {
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+   font-size: var(--font-sm);
+   font-weight: 500;
+   color: var(--color-text-300);
+}
+#html-renderer ul > li {
+   position: relative;
+   padding-left: 20px;
+   line-height: 1.5;
+}
+#html-renderer li > ul,
+#html-renderer li > ol {
+   margin-top: var(--pm-075);
+}
+#html-renderer ol > li {
+   line-height: 1.5;
+   list-style: decimal-leading-zero;
+   list-style-position: inside;
+}
+#html-renderer ol > li::marker {
+   font-weight: 600;
+}
+#html-renderer ul > li::before {
+   position: absolute;
+   left: 0;
+   content: "";
+   height: 15px;
+   width: 15px;
+   background: url("/img/icons/circle-tick.svg") center center no-repeat;
+   background-size: contain;
+   top: 4px;
+}
+#html-renderer img {
+   display: block;
+   border-radius: 12px;
+   width: 100%;
+   height: auto;
+   margin-top: var(--pm-050);
+}
+@media only screen and (min-width: 848px) {
+   #html-renderer h2 {
+      font-size: var(--font-2xl);
+   }
+   #html-renderer h3 {
+      font-size: var(--font-xl);
+   }
+   #html-renderer p,
+   #html-renderer li {
+      font-size: var(--font-normal);
+   }
+}

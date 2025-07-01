@@ -1,0 +1,62 @@
+.comment-card {
+   --img-width: 50px;
+   display: grid;
+   grid-template-columns: var(--img-width) 1fr;
+   gap: 15px;
+   row-gap: 10px;
+   align-items: center;
+}
+.comment-card__img {
+   width: var(--img-width);
+   aspect-ratio: 1;
+   object-fit: cover;
+   border-radius: 50%;
+}
+
+.comment-card__title--container {
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+   column-gap: 15px;
+   overflow: hidden;
+   max-width: 100%;
+}
+.comment-card__title {
+   font-size: var(--font-normal);
+   font-weight: 600;
+   color: var(--color-text-300);
+   transition: 0.3s all ease;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   flex: 1;
+}
+.comment-card__date {
+   font-size: var(--font-sm);
+   color: var(--color-text-250);
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+}
+.comment-card:hover .comment-card__title {
+   color: black;
+}
+.comment-card__content {
+   font-size: var(--font-sm);
+   color: var(--color-text-300);
+   grid-column: span 2;
+}
+
+@media only screen and (min-width: 565px) {
+   .comment-card__img {
+      grid-row: 1/3;
+   }
+   .comment-card__title--container {
+      flex-direction: row;
+      justify-content: space-between;
+   }
+   .comment-card__content {
+      grid-column: 2 / 3;
+   }
+}

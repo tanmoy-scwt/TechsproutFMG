@@ -1,0 +1,13 @@
+.cdiv__container {
+   display: flex;
+}
+@media only screen and (min-width: 848px) {
+   .cdiv__container {
+      border: 1px solid #00000010;
+      border-bottom: 0;
+      border-top-right-radius: 10px;
+      border-top-left-radius: 10px;
+      padding: var(--pm-050);
+      padding-bottom: var(--pm-025);
+   }
+}

@@ -1,0 +1,33 @@
+.filter-container {
+   border: 1px solid #e9eaf0;
+   display: grid;
+   height: max-content;
+}
+.filter-container__title {
+   font-size: var(--font-md);
+   font-weight: 600;
+   color: var(--color-text-400);
+   padding: var(--pm-125);
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   flex-wrap: nowrap;
+   cursor: pointer;
+   user-select: none;
+}
+.filter-container__title.brd {
+   border-bottom: 1px solid #e9eaf0;
+}
+.filter-container__title img {
+   transition: 0.3s all ease;
+}
+.filter-container__title.brd img {
+   transform: rotateX(180deg);
+}
+.filter-container__child {
+   overflow: hidden;
+   transition: 0.3s all linear;
+}
+.filter-container__child--inner {
+   padding: var(--pm-100) var(--pm-125);
+}

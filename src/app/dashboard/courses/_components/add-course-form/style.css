@@ -1,0 +1,65 @@
+.acf__form--container {
+   display: flex;
+   flex-direction: column;
+   gap: 35px;
+}
+.acf__form--items {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+.step1__form,
+.step2__form {
+   display: flex;
+   flex-direction: column;
+   gap: 25px;
+}
+.step1__form label.label:not(.step1__form--cb-label),
+.step1__form div.label {
+   color: var(--color-text-350);
+   font-weight: 500;
+}
+.step1__form .input {
+   font-size: var(--font-xs);
+}
+.acf__form--buttons {
+   display: flex;
+   flex-direction: column-reverse;
+   gap: 10px;
+}
+.acf__form--buttons button {
+   border-radius: 6px;
+   padding: var(--pm-050) var(--pm-100);
+   font-size: var(--font-sm);
+   font-weight: 600;
+   border: 2px solid var(--color-primary-light);
+   width: 100%;
+}
+@media only screen and (min-width: 648px) {
+   .step1__form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+   }
+   .step1__form .input {
+      font-size: var(--font-sm);
+   }
+   .step1__form .course-name {
+      grid-column: span 2;
+   }
+   .acf__form--buttons {
+      flex-direction: row;
+      justify-content: flex-end;
+   }
+   .acf__form--buttons button {
+      width: max-content;
+   }
+}
+
+@media only screen and (min-width: 1080px) {
+   .step1__form {
+      grid-template-columns: repeat(3, 1fr);
+   }
+   .step1__form .course-name {
+      grid-column: span 3;
+   }
+}

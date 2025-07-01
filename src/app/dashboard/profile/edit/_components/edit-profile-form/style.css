@@ -1,0 +1,56 @@
+.epf {
+   border-radius: 12px;
+   border: 1.98px solid #eceef6;
+   padding: var(--pm-100);
+   display: flex;
+   flex-direction: column;
+   gap: 25px;
+   background-color: white;
+}
+
+.epf__info--container {
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: 15px;
+}
+.epf__buttons--container {
+   display: flex;
+   flex-direction: column-reverse;
+   gap: 10px;
+}
+.epf__buttons--container button {
+   font-size: var(--font-normal);
+   font-weight: 500;
+   border-radius: 4px;
+}
+@media only screen and (min-width: 360px) {
+   .epf__edit-button {
+      border-radius: 5px;
+      width: max-content;
+      height: max-content;
+      font-size: var(--font-xs);
+   }
+   .epf__edit-button span {
+      display: block;
+   }
+}
+@media only screen and (min-width: 565px) {
+   .epf {
+      padding: var(--pm-125) var(--pm-150);
+   }
+   .epf__buttons--container {
+      flex-direction: row;
+   }
+}
+@media only screen and (min-width: 945px) {
+   .epf__info--container {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+   }
+}
+@media only screen and (min-width: 1180px) {
+   .epf__info--container {
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 40px;
+   }
+}

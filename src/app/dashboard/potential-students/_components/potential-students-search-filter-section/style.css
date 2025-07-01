@@ -1,0 +1,53 @@
+.pssf__section {
+   display: flex;
+   flex-direction: column;
+   align-items: end;
+   gap: 10px;
+}
+.pssf__section .input {
+   padding-block: var(--pm-050);
+}
+.pssf__input--container {
+   width: 100%;
+   position: relative;
+   height: max-content;
+}
+.pssf__filter--container {
+   width: 100%;
+   position: relative;
+   height: max-content;
+}
+.pssf__section select,
+.pssf__section input {
+   padding-left: 35px;
+   padding-block: var(--pm-050);
+   font-size: var(--font-xs);
+}
+
+.pssf__filter--container svg,
+.pssf__input--container svg {
+   position: absolute;
+   left: 10px;
+   top: 50%;
+   transform: translateY(-50%);
+}
+
+@media only screen and (min-width: 448px) {
+   .pssf__section {
+      flex-direction: row;
+      justify-content: space-between;
+   }
+   .pssf__input--container {
+      max-width: 480px;
+   }
+   .pssf__filter--container {
+      max-width: 175px;
+      overflow: hidden;
+   }
+   .pssf__filter--container select {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+   }
+}

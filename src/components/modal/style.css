@@ -1,0 +1,40 @@
+.modal {
+   position: fixed;
+   inset: 0;
+   animation: revealModal 0.3s ease forwards;
+   z-index: 999;
+   isolation: isolate;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   backdrop-filter: blur(5px);
+}
+.modal__backdrop {
+   position: fixed;
+   inset: 0;
+   background-color: rgb(255, 255, 255, 0.85);
+   cursor: pointer;
+   z-index: -1;
+}
+.modal__close-btn-container {
+   position: absolute;
+   right: 20px;
+   top: 20px;
+   cursor: pointer;
+   z-index: 999;
+}
+
+@keyframes revealModal {
+   0% {
+      display: none;
+      opacity: 0;
+   }
+   1% {
+      display: flex;
+      opacity: 0;
+   }
+   100% {
+      display: flex;
+      opacity: 1;
+   }
+}

@@ -1,0 +1,10 @@
+.course-page__courses {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+
+
+.c-input-area .react-tel-input .country-list{
+    border-radius: 0 !important;
+}

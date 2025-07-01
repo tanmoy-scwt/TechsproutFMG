@@ -1,0 +1,101 @@
+.cdc__section {
+   display: flex;
+   flex-direction: column;
+   gap: 25px;
+}
+.cdc__section > div {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+
+.cdc__course-by {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+   border-radius: 6px;
+   border: 1px solid #00000010;
+   background-color: white;
+   padding: var(--pm-100);
+}
+.cdc__course-by--top {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 10px;
+   align-items: center;
+}
+.cdc__course-by--top img {
+   width: 100%;
+   max-width: 75px;
+   height: auto;
+   aspect-ratio: 1;
+   border-radius: 50%;
+   object-fit: cover;
+}
+.cdc__course-by--top-content {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+   flex: 1;
+}
+.cdc__course-by--top-content .top-name {
+   font-size: var(--font-md);
+   font-weight: 700;
+   color: var(--color-text-350);
+}
+.cdc__course-by--top-content .top-about {
+   font-size: var(--font-xs);
+   color: var(--color-text-300);
+   line-height: 1.5;
+   line-clamp: 3;
+   display: -webkit-box;
+   -webkit-line-clamp: 3;
+   -webkit-box-orient: vertical;
+   overflow: hidden;
+}
+.cdc__course-by--bottom {
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: 15px;
+}
+.cdc__course-by--bottom p {
+   display: grid;
+   grid-template-columns: 20px 1fr;
+   align-items: center;
+   gap: 5px;
+   font-size: var(--font-xs);
+   color: var(--color-text-350);
+   font-weight: 600;
+   line-height: 1.75;
+}
+@media only screen and (min-width: 360px) {
+   .cdc__course-by--bottom {
+      grid-template-columns: 1fr 1fr;
+   }
+}
+@media only screen and (min-width: 848px) {
+   .cdc__course-by {
+      border: none;
+      padding: 0;
+   }
+   .cdc__course-by--top {
+      gap: 20px;
+   }
+   .cdc__course-by--top img {
+      max-width: 100px;
+   }
+   .cdc__course-by--top-content .top-name {
+      font-size: var(--font-lg);
+   }
+   .cdc__course-by--top-content .top-about {
+      font-size: var(--font-sm);
+      line-clamp: 4;
+      -webkit-line-clamp: 4;
+   }
+   .cdc__course-by--bottom {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+   }
+   .cdc__course-by--bottom p {
+      font-size: var(--font-sm);
+   }
+}

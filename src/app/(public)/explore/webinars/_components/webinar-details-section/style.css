@@ -1,0 +1,32 @@
+.wds__container {
+   display: flex;
+   flex-direction: column;
+   gap: 30px;
+}
+.wds__content--container {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+.wds__text {
+   font-weight: 400;
+   font-size: var(--font-sm);
+   line-height: 1.75;
+   color: var(--color-text-250);
+}
+.tick-list li.wds__text {
+   line-height: 1.75;
+}
+.tick-list li.wds__text::before {
+   top: 6.5px;
+}
+@media only screen and (min-width: 848px) {
+   .wds__text {
+      font-size: var(--font-normal);
+   }
+}
+@supports (font-size: clamp(1rem, 2.5vw, 2rem)) {
+   .wds__text {
+      font-size: clamp(var(--font-sm), 3vw, var(--font-normal));
+   }
+}

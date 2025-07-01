@@ -1,0 +1,36 @@
+.filter-section {
+   display: grid;
+   gap: 15px;
+}
+.filter-section__dropdown {
+   display: grid;
+   width: 100%;
+   gap: 15px;
+   justify-items: end;
+}
+
+@media only screen and (min-width: 565px) {
+   .filter-section {
+      grid-template-columns: 1.5fr 1fr;
+   }
+   .filter-section__dropdown {
+      grid-template-columns: 1fr 25px;
+      gap: 15px;
+   }
+}
+@media only screen and (min-width: 848px) {
+   .filter-section {
+      grid-template-columns: 1fr;
+   }
+   .filter-section__dropdown {
+      min-width: 200px;
+   }
+}
+@media only screen and (min-width: 980px) {
+   .filter-section {
+      grid-template-columns: 2fr 1fr 1fr;
+   }
+   .filter-section__dropdown {
+      grid-column: 3/4;
+   }
+}

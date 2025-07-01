@@ -1,0 +1,27 @@
+.inf-comments {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   gap: 35px;
+   padding-block: var(--pm-150);
+}
+.inf-comments__inner--container {
+   display: flex;
+   flex-direction: column;
+   gap: 50px;
+}
+
+.inf-comments .button__primary-light {
+   width: 100%;
+   transition: 0.3s all linear;
+   margin-top: var(--pm-100);
+}
+.inf-comments .button__primary-light:hover {
+   background-color: var(--color-primary);
+}
+@media only screen and (min-width: 768px) {
+   .inf-comments .button__primary-light {
+      width: max-content;
+   }
+}

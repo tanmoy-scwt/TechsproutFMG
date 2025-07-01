@@ -1,0 +1,52 @@
+.filter-btn {
+   background-color: white;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 5px;
+   padding: var(--pm-075);
+   font-size: var(--font-normal);
+   color: var(--color-primary);
+   font-weight: 600;
+   cursor: pointer;
+   border: 1px solid var(--color-primary);
+   transition: 0.2s all linear;
+}
+.filter-btn:hover {
+   color: white;
+   background-color: var(--color-primary);
+}
+.filter-btn svg {
+   width: 24px;
+   height: auto;
+}
+.filter-btn:hover .count {
+   color: var(--color-primary);
+   background-color: white;
+   transition: 0.3s all linear;
+}
+.filter-btn .count {
+   color: white;
+   background-color: var(--color-primary);
+   height: 25px;
+   padding-inline: 6px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+@media only screen and (min-width: 360px) {
+   .filter-btn .text {
+      display: none;
+   }
+}
+
+@media only screen and (min-width: 480px) {
+   .filter-btn {
+      padding: var(--pm-075) var(--pm-150);
+      gap: 10px;
+   }
+   .filter-btn .text {
+      display: block;
+   }
+}

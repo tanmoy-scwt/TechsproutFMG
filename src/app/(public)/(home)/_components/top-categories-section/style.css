@@ -1,0 +1,14 @@
+.tc__container {
+   display: flex;
+   flex-direction: column;
+}
+
+.swiper-slide {
+    cursor: default !important;
+  }
+
+@media only screen and (max-width: 677px) {
+   .tc__container {
+      gap: 25px;
+   }
+}

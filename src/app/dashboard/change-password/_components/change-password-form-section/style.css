@@ -1,0 +1,28 @@
+.cpass__section {
+   display: flex;
+   flex-direction: column-reverse;
+   align-content: center;
+   justify-content: center;
+   gap: 20px;
+}
+.cpass__img--container {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.cpass__img {
+   width: 100%;
+   max-width: 250px;
+   aspect-ratio: 1;
+   object-fit: contain;
+}
+
+@media only screen and (min-width: 1080px) {
+   .cpass__section {
+      flex-direction: row;
+   }
+   .cpass__img {
+      max-width: 450px;
+   }
+}

@@ -1,0 +1,9 @@
+.rating-stars {
+   display: flex;
+   align-items: center;
+   gap: 2px;
+   flex-wrap: nowrap;
+}
+.rating-stars svg {
+   padding: 1px;
+}

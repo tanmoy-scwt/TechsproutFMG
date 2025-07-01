@@ -1,0 +1,6 @@
+.listings-container {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+   gap: 25px;
+   /* grid-template-columns: repeat(3, 1fr); */
+}

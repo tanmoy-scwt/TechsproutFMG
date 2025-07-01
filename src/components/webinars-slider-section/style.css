@@ -1,0 +1,39 @@
+.webinar-slider__container {
+   display: grid;
+   grid-template-columns: 1fr auto;
+   align-items: center;
+   gap: 15px;
+}
+
+.webinar-slider__container .webinar-slider__heading {
+   grid-row: 1 / 2;
+   grid-column: 1 / 2;
+   text-align: left;
+}
+.webinar-slider__section--slider-wrapper {
+   grid-row: 2 /3;
+   grid-column: 1 / 3;
+}
+.webinar-slider__container .explore {
+   grid-row: 1 / 2;
+   grid-column: 2 / 3;
+   text-align: left;
+}
+
+@media only screen and (max-width: 679px) {
+   .webinar-slider__container.wrap .webinar-slider__heading {
+      line-height: 1.35;
+      grid-column: 1 / 3;
+      grid-row: 1 / 2;
+      text-align: center;
+   }
+   .webinar-slider__container.wrap .webinar-slider__section--slider-wrapper {
+      grid-row: 2 / 3;
+      grid-column: 1 / 3;
+   }
+   .webinar-slider__container.wrap .explore {
+      grid-row: 3 / 4;
+      grid-column: 1 / 3;
+      text-align: center;
+   }
+}

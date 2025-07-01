@@ -1,0 +1,107 @@
+.cwah__container {
+   display: flex;
+   flex-direction: column;
+   gap: 25px;
+}
+.cwah__items {
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: 25px;
+   column-gap: 50px;
+   row-gap: 25px;
+}
+.cwah__item {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+.cwah__item--title {
+   font-weight: 600;
+   font-size: var(--font-sm);
+   color: var(--color-text-300);
+   position: relative;
+   width: max-content;
+   padding-bottom: var(--pm-050);
+}
+.cwah__item--title::before {
+   content: "";
+   position: absolute;
+   left: 0;
+   bottom: 0;
+   width: 60%;
+   height: 3px;
+   background-color: var(--color-text-300);
+}
+.cwah__item--content {
+   color: var(--color-primary);
+   font-weight: 600;
+   font-size: var(--font-sm);
+   transition: 0.2s all ease;
+   margin-bottom: var(--pm-050);
+}
+.cwah__item--content:hover {
+   color: var(--color-primary-light);
+}
+.cwah__item--hours {
+   font-size: 0.8rem;
+   font-weight: 500;
+   color: var(--color-text-250);
+}
+
+.cwah__socials--container {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(34px, 34px));
+   gap: 10px;
+   margin-top: var(--pm-150);
+}
+.cwah__socials--container li {
+   height: 34px;
+   width: 34px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background-color: var(--color-primary);
+   transition: 0.2s all linear;
+}
+.cwah__socials--container li:hover {
+   background-color: #0e5c98;
+   box-shadow: 0px 6px 10px 1px #0e5c9860;
+}
+.cwah__socials--container a {
+   height: 34px;
+   width: 34px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.cwah__socials--container img {
+   height: 20px;
+   width: 20px;
+   object-fit: contain;
+}
+@media only screen and (min-width: 768px) {
+   .cwah__items {
+      grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+   }
+   .cwah__item--title {
+      font-size: var(--font-md);
+   }
+   .cwah__item--content {
+      font-size: var(--font-normal);
+   }
+   .cwah__item--hours {
+      font-size: var(--font-xs);
+   }
+}
+
+@supports (font-size: clamp(var(--font-sm), 3vw, var(--font-md))) {
+   .cwah__item--title {
+      font-size: clamp(var(--font-sm), 3vw, var(--font-md));
+   }
+   .cwah__item--content {
+      font-size: clamp(var(--font-sm), 3vw, var(--font-normal));
+   }
+   .cwah__item--hours {
+      font-size: clamp(0.8rem, 3vw, var(--font-xs));
+   }
+}

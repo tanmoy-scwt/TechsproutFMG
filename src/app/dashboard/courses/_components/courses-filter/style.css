@@ -1,0 +1,22 @@
+.courses-filter {
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+   align-items: end;
+}
+.courses-filter__container {
+   max-width: 175px;
+   width: 100%;
+   position: relative;
+}
+.courses-filter__container select {
+   padding-left: 35px;
+   padding-block: var(--pm-050);
+   font-size: var(--font-xs);
+}
+.courses-filter__container svg {
+   position: absolute;
+   left: 10px;
+   top: 50%;
+   transform: translateY(-50%);
+}

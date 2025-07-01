@@ -1,0 +1,53 @@
+.msf__container {
+   display: flex;
+   gap: 15px;
+   overflow-y: auto;
+   max-width: 650px;
+   margin-inline: auto;
+   width: 100%;
+   justify-content: space-between;
+}
+.msf__step {
+   display: grid;
+   grid-template-rows: auto 1fr;
+   gap: 5px;
+   justify-content: center;
+   align-items: center;
+   cursor: pointer;
+}
+.msf__step span {
+   text-align: center;
+   font-size: var(--font-xs);
+   white-space: nowrap;
+}
+.msf__step--index {
+   color: var(--color-primary);
+   font-weight: 500;
+   border: 1.5px solid var(--color-primary);
+   width: 30px;
+   height: 30px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-inline: auto;
+   border-radius: 50%;
+   transition: 0.3s all ease;
+}
+.msf__step.active .msf__step--index {
+   color: white;
+   background-color: var(--color-primary);
+}
+.msf__step--title {
+   align-self: start;
+   color: var(--color-text-300);
+   /* font-weight: 500; */
+}
+.msf__step.active .msf__step--title {
+   font-weight: 600;
+}
+
+@media only screen and (min-width: 565px) {
+   .msf__step span {
+      font-size: var(--font-normal);
+   }
+}

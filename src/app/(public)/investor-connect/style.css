@@ -1,0 +1,36 @@
+.ic__section {
+   display: flex;
+   gap: 25px;
+   flex-direction: column-reverse;
+}
+
+.ic__img--container {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.ic__img {
+   width: 100%;
+   height: auto;
+   aspect-ratio: 1;
+   object-fit: contain;
+   max-width: 450px;
+}
+.ic__section a {
+   color: var(--color-primary) !important;
+   transition: 0.2s all linear;
+}
+.ic__section a:hover {
+   color: var(--color-primary-light) !important;
+}
+@media only screen and (min-width: 848px) {
+   .ic__section {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+   }
+   .ic__img--container {
+      justify-content: end;
+   }
+}

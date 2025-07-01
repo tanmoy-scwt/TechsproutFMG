@@ -1,0 +1,123 @@
+.wfs__container {
+   background-color: white;
+   padding: var(--pm-125) var(--pm-100);
+   border-radius: 6px;
+   box-shadow: 0px 0px 3px 3px #00000010;
+}
+.wfs__form,
+.wfs__container {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+.wfs__form--item {
+   display: flex;
+   flex-direction: column;
+   gap: 7px;
+}
+.wfs__form--item .input {
+   padding: var(--pm-050);
+   height: 45px;
+}
+
+/* bikram css  */
+.react-tel-input .form-control {
+   width: 100% !important;
+   height: 44px !important;
+}
+.c-connected-card-modal {
+   overflow: scroll;
+   height: 100vh;
+   scrollbar-width: none;
+}
+/* bikram css  */
+
+.country_select_code {
+   display: flex;
+   align-items: center;
+   width: auto;
+   background-color: #fff;
+}
+.country_select_code_dropdown {
+   border-radius: 3px;
+   display: inline-flex;
+   align-items: center;
+   cursor: pointer;
+   padding: 0px 17px 0px 7px;
+   border: 1px solid #ccc;
+   margin-right: -1px;
+   font-size: 12px;
+   height: 46px;
+}
+.select_input_number {
+   border-radius: 3px;
+   padding: 10px;
+   width: 100%;
+   border: 1px solid #ccc;
+   display: inline-block;
+   font-size: 13px;
+   height: 46px;
+}
+.drop_down_country_code {
+   border: 1px solid #ccc;
+   padding: 10px;
+   margin-top: 5px;
+   width: auto;
+   background-color: white;
+   position: absolute;
+   z-index: 10;
+}
+.flag_list {
+   padding: 5px;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+}
+.c-connected-card-modal__image-area img {
+   display: block;
+}
+
+/* Media query for mobile screen sizes */
+@media (max-width: 768px) {
+   .c-connected-card-modal__image-area img {
+      display: none; /* Hides the image on mobile */
+   }
+   .select_input_number {
+      border-radius: 3px;
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      display: inline-block;
+   }
+   .country_select_code_dropdown {
+      width: 108px;
+   }
+}
+@media only screen and (max-width: 300px) {
+   .select_input_number {
+      border-radius: 3px;
+      padding: 10px;
+      width: 250px;
+      border: 1px solid #ccc;
+      display: inline-block;
+   }
+}
+.agree_check_box {
+   margin-left: 4px;
+   color: #524c4c;
+   font-size: 13px;
+}
+.agree_check_box a {
+   color: blue;
+   text-decoration: underline;
+}
+.error_text {
+   color: red;
+}
+.flag_dimension {
+   width: 20px;
+   margin-right: 10px;
+}
+.react-tel-input .country-list{
+    border-radius: none !important;
+}

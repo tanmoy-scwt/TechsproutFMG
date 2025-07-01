@@ -1,0 +1,36 @@
+.scs-button {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   background-color: white;
+}
+.scs-button.sticky {
+   position: fixed;
+   z-index: 10;
+   inset-inline: 0;
+   bottom: 0;
+   padding: var(--pm-050, 8px) var(--pm-100, 16px);
+   box-shadow: 0px 0px 4px 0px #00000025;
+}
+.scs-button .button__primary {
+   width: 100%;
+   padding-inline: var(--pm-050, 8px);
+   height: 45px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: var(--font-normal);
+   font-weight: 600;
+}
+
+@media only screen and (min-width: 848px) {
+   .scs-button.sticky {
+      position: static;
+      padding: 0;
+      box-shadow: none;
+   }
+   .scs-button .button__primary {
+      width: max-content;
+      padding-inline: var(--pm-150, 20px);
+   }
+}

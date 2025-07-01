@@ -1,0 +1,406 @@
+.cdi__container {
+   display: grid;
+   gap: 30px;
+   border: 1px solid #00000010;
+   padding: var(--pm-075);
+   border-radius: 10px;
+}
+.cdi__items {
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: 10px;
+}
+.cdi__items p {
+   display: grid;
+   align-items: center;
+   grid-template-columns: 1fr 0.5fr;
+   gap: 5px;
+   justify-content: space-between;
+   white-space: nowrap;
+   font-weight: 700;
+   font-size: var(--font-xs);
+}
+.cdi__items .cdi__item-title {
+   display: grid;
+   grid-template-columns: 30px 1fr;
+   gap: 5px;
+   align-items: center;
+   color: var(--color-text-350);
+}
+.cdi__items .cdi__item-desc {
+   /* overflow: hidden; */
+   text-overflow: ellipsis;
+   max-width: 250px;
+   color: var(--color-text-250);
+   text-align: right;
+}
+.cd__full-course {
+   display: grid;
+   align-items: center;
+   grid-template-columns: 1fr 0.5fr;
+   gap: 5px;
+   justify-content: space-between;
+}
+.cd__full-course--title {
+   font-size: var(--font-normal);
+   color: var(--color-text-250);
+   font-weight: 700;
+}
+.cd__full-course--description {
+   font-size: var(--font-md);
+   color: var(--color-text-350);
+   font-weight: 700;
+}
+.c-connected-card-modal {
+   padding: 0;
+   gap: 0;
+   overflow: hidden;
+   height: 90%;
+   overflow-y: scroll;
+}
+.agree_check_box {
+   margin-left: 4px;
+   color: #524c4c;
+   font-size: 13px;
+}
+.agree_check_box a {
+   color: blue;
+   text-decoration: underline;
+}
+.error_text {
+   color: red;
+}
+.flag_dimension {
+   width: 20px;
+   margin-right: 10px;
+}
+.c-connected-card-modal__grid {
+   display: flex;
+   flex-wrap: wrap;
+}
+.c-connected-card-modal__col {
+   flex: 0 0 auto;
+   width: 50%;
+}
+.c-connected-card-modal__image-area {
+   background-color: #daf4ff;
+   height: 100%;
+}
+
+.c-connected-card-modal__form-area {
+   padding: 0px 50px 10px;
+   text-align: center;
+   margin-top: 30px;
+}
+.c-connected-card-modal__form-area h2 {
+   color: #524c4c;
+   font-size: 22px;
+   font-weight: 700;
+   margin: 0 0 6px;
+}
+.c-connected-card-modal__form-area h3 {
+   color: #524c4c;
+   font-size: 10.75px;
+   font-weight: 400;
+   position: relative;
+   margin: 0 0 8px;
+}
+.c-connected-card-modal__form-area h3::before {
+   content: "";
+   width: 70%;
+   height: 1px;
+   position: absolute;
+   left: 0;
+   right: 0;
+   top: 50%;
+   margin: 0 auto;
+   background-color: rgba(82, 76, 76, 0.38);
+}
+.c-connected-card-modal__form-area h3 span {
+   display: inline-block;
+   vertical-align: middle;
+   padding: 0 10px;
+   background: #fff;
+   z-index: 1;
+   position: relative;
+}
+
+.c-input-area {
+   display: block;
+   margin: 0 0 16px;
+}
+.c-input-area label {
+   color: rgba(82, 76, 76, 0.72);
+   font-size: 13px;
+   font-weight: 600;
+   display: block;
+   text-align: left;
+   margin: 0 0 5px;
+}
+.c-input-area .form-control {
+   width: 100%;
+   height: 44px;
+   border: rgba(82, 76, 76, 0.38) 1px solid;
+   border-radius: 7px;
+   outline: none;
+   padding: 0 14px;
+   font-size: 12px;
+   /* color: rgba(82, 76, 76, 0.5); */
+   font-weight: 400;
+}
+.c-input-area textarea.form-control {
+   height: 70px;
+   padding: 14px;
+}
+.c-btn-contact-trainer {
+   width: 100%;
+   max-width: 215px;
+   display: block;
+   margin: 0 auto;
+   border-radius: 40px;
+}
+.PhoneInputInput {
+   outline: none;
+   border-left: rgba(82, 76, 76, 0.38) 1px solid;
+   height: 42px;
+   background: transparent;
+   padding-left: 12px;
+}
+
+.courseContact .c-input-area {
+   display: block;
+   margin: 0 0 11px;
+   text-align: left;
+}
+
+/* bikram css  */
+.react-tel-input .form-control {
+   width: 100% !important;
+   height: 44px !important;
+}
+.c-connected-card-modal {
+   overflow: scroll;
+   height: 100vh;
+   scrollbar-width: none;
+}
+body {
+   pointer-events: all !important;
+}
+
+.loader {
+   display: inline-block;
+   width: 16px;
+   height: 16px;
+   border: 2px solid #f3f3f3;
+   border-radius: 50%;
+   border-top: 2px solid #3498db;
+   animation: spin 1s linear infinite;
+}
+@keyframes spin {
+   0% {
+      transform: rotate(0deg);
+   }
+   100% {
+      transform: rotate(360deg);
+   }
+}
+/* bikram css  */
+
+@media only screen and (min-width: 480px) {
+   .cdi__items {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 25px;
+   }
+   .cdi__items p,
+   .cd__full-course {
+      grid-template-columns: 1fr 1fr;
+   }
+   .cd__full-course {
+      gap: 25px;
+   }
+   .cdi__container {
+      padding: var(--pm-100);
+   }
+}
+@media only screen and (min-width: 680px) {
+   .cdi__items p {
+      font-size: var(--font-sm);
+   }
+   .cd__full-course--title {
+      font-size: var(--font-md);
+   }
+   .cd__full-course--description {
+      font-size: var(--font-lg);
+   }
+}
+
+@media only screen and (min-width: 848px) {
+   .cdi__section {
+      margin-top: -25px;
+   }
+   .cdi__container {
+      gap: 25px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border-top: 0;
+      padding: var(--pm-075);
+   }
+   .cdi__items {
+      grid-template-columns: 1fr;
+   }
+   .cdi__items p {
+      font-size: var(--font-sm);
+      grid-template-columns: 1fr 0.35fr;
+   }
+   .cd__full-course {
+      grid-template-columns: 1fr 0.35fr;
+      gap: 5px;
+   }
+}
+
+@media (max-width: 767.98px) {
+   .c-connected-card-modal__col {
+      width: 100%;
+      height: auto;
+      padding: 25px;
+   }
+   .c-connected-card-modal__form-area h2 {
+      font-size: 22px;
+   }
+   .c-connected-card-modal {
+      height: 100vh;
+      overflow-y: scroll;
+   }
+}
+
+/* azhar css  */
+.country_select_code {
+   display: flex;
+   align-items: center;
+   width: auto;
+   background-color: #fff;
+}
+.country_select_code_dropdown {
+   border-radius: 3px;
+   display: inline-flex;
+   align-items: center;
+   cursor: pointer;
+   padding: 0px 17px 0px 7px;
+   border: 1px solid #ccc;
+   margin-right: -1px;
+   font-size: 12px;
+   height: 46px;
+}
+.select_input_number {
+   border-radius: 3px;
+   padding: 10px;
+   width: 100%;
+   border: 1px solid #ccc;
+   display: inline-block;
+   font-size: 13px;
+   height: 46px;
+}
+.drop_down_country_code {
+   border: 1px solid #ccc;
+   padding: 10px;
+   margin-top: 5px;
+   width: auto;
+   background-color: white;
+   position: absolute;
+   z-index: 10;
+}
+.flag_list {
+   padding: 5px;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+}
+.c-connected-card-modal__image-area img {
+   display: block;
+}
+
+span.cd__full-course--title.course_wrapper {
+   padding-left: 5px;
+}
+span.cd__full-course--title.course_wrapper,
+.amount-wrapper {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   gap: 10px;
+   white-space: nowrap;
+   font-size: 16px;
+   color: #212121;
+}
+.period {
+   text-overflow: ellipsis;
+   max-width: 250px;
+   color: var(--color-text-250);
+   font-weight: 700;
+}
+.c-input-area .react-tel-input .country-list{
+    border-radius: 0 !important;
+}
+
+/* Media query for mobile screen sizes */
+@media (max-width: 768px) {
+   .c-connected-card-modal__image-area img {
+      display: none; /* Hides the image on mobile */
+   }
+   .select_input_number {
+      border-radius: 3px;
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      display: inline-block;
+      font-size: 12px;
+      height: 44px;
+   }
+   .country_select_code_dropdown {
+      width: 108px;
+      font-size: 12px;
+      height: 44px;
+   }
+   .c-connected-card-modal__form-area h2 {
+      font-size: 16px;
+   }
+   .c-connected-card-modal__image-area {
+      margin-top: 8px;
+      background-color: #fff;
+      height: 10%;
+   }
+   .c-connected-card-modal__col {
+      width: 100%;
+      height: auto;
+      padding: 10px 6px;
+      margin-top: 8px;
+   }
+}
+@media only screen and (max-width: 300px) {
+   .select_input_number {
+      border-radius: 3px;
+      padding: 10px;
+      width: 250px;
+      border: 1px solid #ccc;
+      display: inline-block;
+   }
+}
+@media only screen and (max-width: 320px) {
+   .c-connected-card-modal__col {
+      width: 100%;
+      height: auto;
+      padding: 10px 6px;
+      margin-top: 8px;
+   }
+   .c-connected-card-modal__form-area h2 {
+      font-size: 14px;
+   }
+   .c-connected-card-modal__image-area {
+      background-color: #fff;
+      /* height: 100%; */
+   }
+   .close_btn {
+      padding: 6px;
+      margin-top: -10px;
+   }
+}

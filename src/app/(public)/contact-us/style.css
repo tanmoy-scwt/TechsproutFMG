@@ -1,0 +1,12 @@
+.contact-us__main {
+   display: flex;
+   flex-direction: column;
+   gap: 40px;
+   margin-bottom: var(--pm-300);
+}
+
+@media only screen and (min-width: 848px) {
+   .contact-us__main {
+      gap: 80px;
+   }
+}

@@ -1,0 +1,28 @@
+.sug-scroll {
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+}
+.sug-scroll p,
+.sug-scroll a {
+   font-size: 0.8rem;
+}
+.sug-scroll__container {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   flex-wrap: wrap;
+   gap: 10px;
+   row-gap: 5px;
+}
+.sug-scroll__item {
+   white-space: nowrap;
+   color: var(--color-primary);
+   font-weight: 500;
+}
+
+@media only screen and (min-width: 1080px) {
+   .sug-scroll {
+      flex-direction: row;
+   }
+}

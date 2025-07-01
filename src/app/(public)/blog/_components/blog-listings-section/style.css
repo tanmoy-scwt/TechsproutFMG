@@ -1,0 +1,11 @@
+.blog-listings__container {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+   gap: 25px;
+}
+
+@media only screen and (min-width: 768px) {
+   .blog-listings__container {
+      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+   }
+}

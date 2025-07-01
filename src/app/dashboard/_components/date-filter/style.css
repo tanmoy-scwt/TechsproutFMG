@@ -1,0 +1,13 @@
+.date-filter {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   row-gap: 10px;
+   width: 100%;
+}
+
+@media only screen and (min-width: 565px) {
+   .date-filter {
+      flex-direction: row;
+   }
+}

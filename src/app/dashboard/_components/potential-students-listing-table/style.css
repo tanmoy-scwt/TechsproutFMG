@@ -1,0 +1,79 @@
+button.history,
+button.recharge {
+    background-color: aliceblue;
+    min-width: 85px;
+    padding: 7px 12px;
+    border-radius: 3px;
+    outline: none;
+    font-size: 14px;
+}
+
+button.recharge {
+    background-color: blueviolet;
+    color: #ffffff;
+    margin-left: 6px;
+}
+
+button.unlock {
+    min-width: 85px;
+    padding: 7px 12px;
+    border-radius: 3px;
+    outline: none;
+}
+
+.available-coins-body {
+    display: flex
+;
+    gap: 30px;
+    justify-content: space-between;
+}
+
+.available-item-left h3 {
+    font-size: 26px;
+    font-weight: 600;
+    margin: 20px 0 25px;
+}
+
+.coins-view {
+    display: flex
+;
+    gap: 20px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.coins-view p big,
+.available-item-right p big{
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.coins-view p,
+.available-item-right p {
+    line-height: 16px;
+}
+
+.coins-view p small,
+.available-item-right p small {
+    color: #cccccc;
+}
+
+.available-item-right {
+    background: #f2f2f2;
+    padding: 20px 30px;
+    border-radius: 4px;
+}
+
+.available-item-right h4 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.available-item-right p {
+    margin-bottom: 20px;
+}
+
+.modalHeading h4 {
+    font-size: 20px;
+    font-weight: 600;
+}
