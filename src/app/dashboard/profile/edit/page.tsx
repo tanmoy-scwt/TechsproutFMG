@@ -9,6 +9,7 @@ async function EditProfilePage() {
    const session = await auth();
    const cookieStore = cookies();
    const SubscriptionTakenTillNow = cookieStore.get("ifAnySubscriptionTakenTillNow")?.value;
+   const CourseExists = cookieStore.get("ifAnyCourseExists")?.value;
 
    const res = await ClientFetch(`${process.env.API_URL}/user/view-profile/${session?.user.userId}`, {
       headers: {
@@ -20,7 +21,7 @@ async function EditProfilePage() {
 
    const profileData: UserProfile = (await res.json())?.data;
 
-   return <EditProfileForm data={profileData} SubscriptionTakenTillNow={SubscriptionTakenTillNow} />;
+   return <EditProfileForm data={profileData} SubscriptionTakenTillNow={SubscriptionTakenTillNow} CourseExists={CourseExists} />;
 }
 
 export default EditProfilePage;

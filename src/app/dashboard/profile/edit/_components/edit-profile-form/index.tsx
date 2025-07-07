@@ -22,6 +22,7 @@ import Tiptap from "@/components/tiptap/Tiptap";
 interface EditProfileFormProps {
    data: UserProfile;
    SubscriptionTakenTillNow: string | undefined;
+   CourseExists: string | undefined;
 }
 interface UserBio {
    bio: string | null;
@@ -56,7 +57,7 @@ interface Language {
    name: string;
 }
 
-function EditProfileForm({ data, SubscriptionTakenTillNow }: EditProfileFormProps) {
+function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditProfileFormProps) {
    console.log(SubscriptionTakenTillNow, "SubS");
 
    const [allQualifications, setAllQualifications] = useState<Qualification[]>([]);
@@ -516,7 +517,11 @@ function EditProfileForm({ data, SubscriptionTakenTillNow }: EditProfileFormProp
          await update(data);
          // RevalidatePath("/dashboard/profile", "page");
          if (SubscriptionTakenTillNow == 'false') {
-            router.push(dashboardLinks.addCourses);
+            if (SubscriptionTakenTillNow == 'false' && CourseExists == "false") {
+               router.push(dashboardLinks.addCourses);
+            } else {
+               router.push(dashboardLinks.courses);
+            }
          } else {
             router.push(dashboardLinks.profile)
          }
