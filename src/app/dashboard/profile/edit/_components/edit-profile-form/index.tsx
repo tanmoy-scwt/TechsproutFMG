@@ -19,6 +19,9 @@ import { RevalidatePath } from "@/actions/revalidate-path";
 import Loading from "@/components/loading";
 import GoogleAddressAutofill from "@/components/google-address-autofill";
 import Tiptap from "@/components/tiptap/Tiptap";
+import dynamic from "next/dynamic";
+import { MultiValue } from 'react-select'
+const Select = dynamic(() => import("react-select"), { ssr: false })
 interface EditProfileFormProps {
    data: UserProfile;
    SubscriptionTakenTillNow: string | undefined;
@@ -57,12 +60,19 @@ interface Language {
    name: string;
 }
 
+type SelectOption = {
+   label: string;
+   value: string;
+};
+
 function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditProfileFormProps) {
    console.log(SubscriptionTakenTillNow, "SubS");
 
    const [allQualifications, setAllQualifications] = useState<Qualification[]>([]);
    const [allSkills, setAllSkills] = useState<Skill[]>([]);
    const [allLanguages, setAllLanguages] = useState<Language[]>([]);
+
+   const [nselectedLanguage, setNSelectedLanguage] = useState<MultiValue<SelectOption>>([]);
 
    const [submitting, setSubmitting] = useState(false);
    const [bioEditor, setBioEditor] = useState<UserBio>({ bio: data.bio });
@@ -451,7 +461,8 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
             year_of_exp: values.year_of_exp ? +values.year_of_exp : 0,
             qualification: JSON.stringify(data.qualification),
             skill: JSON.stringify(data.skill),
-            language: JSON.stringify(data.language),
+            // language: JSON.stringify(data.language) || JSON.stringify(nselectedLanguage),
+            language: JSON.stringify(nselectedLanguage?.map((option) => option.value)),
          };
          console.log("dataToSubmit", dataToSubmit);
          const result = await ServerFetch("/user/update/educational-info", {
@@ -543,6 +554,16 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
          fetchCities(values.state);
       }
    }, [values.state]);
+   useEffect(() => {
+      if (suggestions.language.selected && allLanguages?.length) {
+         const allSelectedLanguage = suggestions.language.selected.map((lang) => ({
+            label: lang.label,
+            value: String(lang.value),
+         }));
+         setNSelectedLanguage(allSelectedLanguage);
+      }
+
+   }, [suggestions, allLanguages]);
 
    return (
       <form
@@ -915,7 +936,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                   />
                   {suggestions.skill.error && <p className="error">{suggestions.skill.error}</p>}
                </div>
-               <div>
+               {/* <div>
                   <AutoFillInput
                      label="Language"
                      id="language"
@@ -954,6 +975,18 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                      }}
                   />
                   {suggestions.language.error && <p className="error">{suggestions.language.error}</p>}
+               </div> */}
+               <div>
+                  <label htmlFor={"language"} className="label">
+                     {"Language"}
+                  </label>
+                  <Select
+                     isMulti
+                     value={nselectedLanguage}
+                     onChange={(selected) => setNSelectedLanguage(selected as MultiValue<SelectOption>)}
+                     options={allLanguages}
+                     placeholder={"Select Language"}
+                  />
                </div>
                <div>
                   <label htmlFor="experience" className="label">
