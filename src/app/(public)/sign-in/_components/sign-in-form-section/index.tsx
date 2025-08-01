@@ -20,7 +20,7 @@ function SignInFormSection() {
             </div>
             <div className="sif__form--container container">
                <SignInFormSwitch />
-               <p className="text-center" style={{marginTop:-55,}}>
+               <p className="text-center">
                   Dont have an account?{" "}
                   <Link prefetch={false} href={links.signUp} className="sif__form--link">
                      Sign up

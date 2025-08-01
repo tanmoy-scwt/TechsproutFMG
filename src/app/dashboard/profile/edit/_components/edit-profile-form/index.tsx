@@ -48,8 +48,8 @@ interface Suggestions {
 }
 
 interface Qualification {
-   id: number;
-   name: string;
+   value: number;
+   label: string;
 }
 interface Skill {
    id: number;
@@ -63,19 +63,23 @@ interface Language {
 
 type SelectOption = {
    label: string;
-   value: string;
+   value: string | number;
 };
 
 function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditProfileFormProps) {
-   console.log(SubscriptionTakenTillNow, "SubS");
+   console.log(data, "data hoon ma");
 
    const [allQualifications, setAllQualifications] = useState<Qualification[]>([]);
+   console.log(allQualifications, "Asdasd");
+
    const [allSkills, setAllSkills] = useState<Skill[]>([]);
    const [allLanguages, setAllLanguages] = useState<Language[]>([]);
 
    const [nselectedLanguage, setNSelectedLanguage] = useState<MultiValue<SelectOption>>([]);
    const [nselectedSkills, setNSelectedSkills] = useState<MultiValue<SelectOption>>([]);
    const [nselectedQualification, setNSelectedQualification] = useState<MultiValue<SelectOption>>([]);
+   console.log(nselectedQualification, "sasdajsdkasjd sakjdasd ");
+
 
    const [submitting, setSubmitting] = useState(false);
    const [bioEditor, setBioEditor] = useState<UserBio>({ bio: data.bio });
@@ -123,7 +127,6 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
       qualification: { loading: false, value: [], selected: data.qualification || [], error: "" },
    });
    const suggestionsRef = useRef<{ [key: string]: HTMLInputElement }>({});
-   console.log(suggestions, ":Sadjashdkjashd");
 
 
    const fetchStates = useCallback(async (value: string) => {
@@ -170,8 +173,6 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
    ): Promise<{ value: string; label: string }[]> => {
       if (!query) return [];
 
-      console.log("Fetching suggestions for:", name, query);
-
       let sourceData: any[] = [];
 
       switch (name) {
@@ -190,8 +191,6 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
 
       const lowerQuery = query.toLowerCase();
 
-      console.log("Source Data:", allQualifications);
-
       const filtered = sourceData
          .filter((item) => item?.label && item.label.toLowerCase().includes(lowerQuery))
          .map((item) => ({
@@ -199,13 +198,8 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
             label: item.label ?? '',
          }));
 
-      console.log("Filtered Data:", filtered);
-
       return filtered;
    };
-
-
-   console.log(suggestions.language.loading, "asdjaslkdjlaskjdlkasjlkdjaslkdjlkas lsajlkd asljdklasjdl asjdlkasjdljaslj");
 
    const handleLanguageInputChange = async (query: string) => {
       setSuggestions((prev) => ({
@@ -297,9 +291,9 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
             }),
          ]);
 
-         console.log("Qualifications:", qualificationRes.data);
-         console.log("Skills:", skillRes.data);
-         console.log("Languages:", languageRes.data);
+         // console.log("Qualifications:", qualificationRes.data);
+         // console.log("Skills:", skillRes.data);
+         // console.log("Languages:", languageRes.data);
 
          setAllQualifications(Array.isArray(qualificationRes.data) ? qualificationRes.data : []);
          setAllSkills(Array.isArray(skillRes.data) ? skillRes.data : []);
@@ -361,7 +355,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
 
 
    const handleUpdateProfilePicture = async (session: Session) => {
-      console.log("formdata profile picture", profileImages);
+      // console.log("formdata profile picture", profileImages);
       try {
          if (!profileImages.file || !session.user) return "no-change";
          const formdata = new FormData();
@@ -442,7 +436,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
             // qualification: JSON.stringify(data.qualification),
             // skill: JSON.stringify(data.skill),
             // language: JSON.stringify(data.language) || JSON.stringify(nselectedLanguage),
-            qualification: JSON.stringify(nselectedQualification?.map((option) => option.value)),
+            qualification: JSON.stringify(nselectedQualification?.map((option) => option.value.toString())),
             skill: JSON.stringify(nselectedSkills?.map((option) => option.value)),
             language: JSON.stringify(nselectedLanguage?.map((option) => option.value)),
          };
@@ -537,7 +531,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
       }
    }, [values.state]);
    useEffect(() => {
-      if (suggestions.language.selected && allLanguages?.length && suggestions.skill.selected && suggestions.qualification.selected) {
+      if (suggestions.language.selected && allLanguages?.length && suggestions.skill.selected) {
          const allSelectedLanguage = suggestions.language.selected.map((lang) => ({
             label: lang.label,
             value: String(lang.value),
@@ -546,21 +540,24 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
             label: skill.label,
             value: String(skill.value),
          }));
-         const allSelectedQualification = suggestions.qualification.selected.map((qual) => ({
-            label: qual.label,
-            value: String(qual.value),
-         }));
-         console.log(allSelectedQualification, "hahahahah");
-         console.log(suggestions.qualification.selected);
-
-
          setNSelectedLanguage(allSelectedLanguage);
          setNSelectedSkills(allSelectedSkills);
-         setNSelectedQualification(allSelectedQualification);
       }
 
-   }, [suggestions, allLanguages, allSkills, allQualifications]);
-   console.log(nselectedQualification, "nSele");
+   }, [suggestions, allLanguages, allSkills]);
+
+   useEffect(() => {
+      if (allQualifications && data?.qualification?.length) {
+         const qualificationNo = data.qualification.map((option: { value: string }) => +option.value);
+
+         const selected = allQualifications.filter((qual) => qualificationNo.includes(qual.value));
+         setNSelectedQualification(selected);
+      } else {
+         console.log("hello");
+      }
+   }, [allQualifications, data?.qualification]);
+
+
 
 
    return (
