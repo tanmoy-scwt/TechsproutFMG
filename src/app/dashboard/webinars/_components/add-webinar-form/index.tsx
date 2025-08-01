@@ -145,9 +145,9 @@ const AddWebinarForm = ({ editId }: { editId?: string }) => {
             if (formData[key].value !== null) {
                const value =
                   typeof formData[key].value === "object" &&
-                  !key.includes("logo") &&
-                  !key.includes("start_date") &&
-                  !key.includes("end_date")
+                     !key.includes("logo") &&
+                     !key.includes("start_date") &&
+                     !key.includes("end_date")
                      ? JSON.stringify(formData[key].value)
                      : formData[key].value;
                if (value) {
@@ -251,7 +251,7 @@ const AddWebinarForm = ({ editId }: { editId?: string }) => {
    const getCurrencies = async () => {
       try {
          const { data } = await ServerFetch("/currency/listing", {
-            next: { revalidate: 5, tags: ["currencies"] },
+            next: { revalidate: 0, tags: ["currencies"] },
          });
          const temp = { ...formData };
          temp["currency_id"].options = data?.map((c: any) => ({

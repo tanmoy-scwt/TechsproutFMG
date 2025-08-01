@@ -15,7 +15,7 @@ async function SubscriptionHistoryPage() {
          "Content-Type": "application/json",
          Authorization: `Bearer ${session?.user.token}`,
       },
-      next: { revalidate: 5, tags: ["subscriptionListing"] },
+      next: { revalidate: 0, tags: ["subscriptionListing"] },
    });
 
    const resp = await res.json();

@@ -1,7 +1,6 @@
 "use client";
 
 import "./style.css";
-
 import { UserProfile } from "../../../_types";
 import { Separator } from "@/components/ui/separator";
 import { FieldValues, useForm } from "react-hook-form";
@@ -9,48 +8,37 @@ import ProfilePicPicker from "@/app/dashboard/_components/profile-pic-picker";
 import { dashboardLinks, LOGO_ICON_PREVIEW } from "@/lib/constants";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ServerFetch } from "@/actions/server-fetch";
-import AutoFillInput, { AutoFillInputSuggestion } from "@/components/autofill-input";
 import { Session } from "next-auth";
 import { getSession, useSession } from "next-auth/react";
 import { ErrorToast, SuccessToast } from "@/lib/toast";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { RevalidatePath } from "@/actions/revalidate-path";
 import Loading from "@/components/loading";
 import GoogleAddressAutofill from "@/components/google-address-autofill";
 import Tiptap from "@/components/tiptap/Tiptap";
 import dynamic from "next/dynamic";
 import { MultiValue } from 'react-select'
 import Skeleton from "@/components/skeleton";
+
 const Select = dynamic(() => import("react-select"), { ssr: false })
+
 interface EditProfileFormProps {
    data: UserProfile;
    SubscriptionTakenTillNow: string | undefined;
    CourseExists: string | undefined;
 }
-interface UserBio {
-   bio: string | null;
-}
-interface UserHighlight {
-   highlights: string | null;
-}
-interface SuggestionOption {
-   loading: boolean;
-   value: Array<AutoFillInputSuggestion>;
-   selected: Array<AutoFillInputSuggestion>;
-   error?: string;
-}
 
-interface Suggestions {
-   language: SuggestionOption;
-   skill: SuggestionOption;
-   qualification: SuggestionOption;
+interface MasterData {
+   qualifications: Qualification[];
+   skills: Skill[];
+   languages: Language[];
 }
 
 interface Qualification {
    value: number;
    label: string;
 }
+
 interface Skill {
    id: number;
    name: string;
@@ -66,34 +54,93 @@ type SelectOption = {
    value: string | number;
 };
 
+interface FormData {
+   personalInfo: {
+      profilePic: {
+         src: string;
+         preview_profile_pic?: string;
+         file: File | null;
+      };
+      f_name: string;
+      email: string;
+      phone: string;
+      bio: string | null;
+      highlights: string | null;
+      country: string;
+      state: string;
+      city: string;
+      address: string;
+      gst_no: string;
+      postcode: string;
+      area: string;
+   };
+   educationalInfo: {
+      qualifications: MultiValue<SelectOption>;
+      skills: MultiValue<SelectOption>;
+      languages: MultiValue<SelectOption>;
+      year_of_exp: number;
+   };
+}
+
 function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditProfileFormProps) {
-   console.log(data, "data hoon ma");
+   const router = useRouter();
+   const { update } = useSession();
 
-   const [allQualifications, setAllQualifications] = useState<Qualification[]>([]);
-   console.log(allQualifications, "Asdasd");
+   // Master data state
+   const [masterData, setMasterData] = useState<MasterData>({
+      qualifications: [],
+      skills: [],
+      languages: []
+   });
 
-   const [allSkills, setAllSkills] = useState<Skill[]>([]);
-   const [allLanguages, setAllLanguages] = useState<Language[]>([]);
+   const [isLoadingMasterData, setIsLoadingMasterData] = useState(true);
 
-   const [nselectedLanguage, setNSelectedLanguage] = useState<MultiValue<SelectOption>>([]);
-   const [nselectedSkills, setNSelectedSkills] = useState<MultiValue<SelectOption>>([]);
-   const [nselectedQualification, setNSelectedQualification] = useState<MultiValue<SelectOption>>([]);
-   console.log(nselectedQualification, "sasdajsdkasjd sakjdasd ");
+   // Form data state
+   const [formData, setFormData] = useState<FormData>({
+      personalInfo: {
+         profilePic: {
+            src: data.profile_pic || "",
+            preview_profile_pic: data.preview_profile_pic || "",
+            file: null,
+         },
+         f_name: data.f_name || "",
+         email: data.email || "",
+         phone: data.phone || "",
+         bio: data.bio || null,
+         highlights: data.highlights || null,
+         country: data.country || "1",
+         state: data.state || "",
+         city: data.city || "",
+         address: data.address || "",
+         gst_no: data.gst_no || "",
+         postcode: data.postcode || "",
+         area: data.area || "",
+      },
+      educationalInfo: {
+         qualifications: [],
+         skills: [],
+         languages: [],
+         year_of_exp: data.year_of_exp || 0,
+      }
+   });
 
+   // Location state
+   const [location, setLocation] = useState<{
+      states: Array<{ label: string; value: string }>;
+      cities: Array<{ label: string; value: string }>;
+   }>({
+      states: [],
+      cities: [],
+   });
+
+   const [locationLoading, setLocationLoading] = useState({
+      states: false,
+      cities: false,
+   });
 
    const [submitting, setSubmitting] = useState(false);
-   const [bioEditor, setBioEditor] = useState<UserBio>({ bio: data.bio });
-   const [addHighlights, setAddHighlights] = useState<UserHighlight>({ highlights: data.highlights });
-   const debounceTimeoutRef = useRef<{ [key: string]: NodeJS.Timeout }>({});
-   const [profileImages, setProfileImages] = useState<{
-      src: string;
-      preview_profile_pic?: string;
-      file: File | null;
-   }>({
-      src: data.profile_pic || "",
-      preview_profile_pic: data.preview_profile_pic || "",
-      file: null,
-   });
+   const areaContainerRef = useRef<HTMLLabelElement>(null);
+
    const {
       register,
       handleSubmit,
@@ -103,421 +150,131 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
       setError,
       clearErrors,
    } = useForm({
-      //defaultValues: data,
       defaultValues: {
          ...data,
-         country: data.country || "1", // Default country as India
+         country: data.country || "1",
       }
    });
-   const areaContainerRef = useRef<HTMLLabelElement>(null);
-   const router = useRouter();
-   const { update } = useSession();
+
    const values = watch();
-   const [location, setLocation] = useState<{ [key: string]: Array<{ label: string; value: string }> }>({
-      states: [],
-      cities: [],
-   });
-   const [locationLoading, setLocationLoading] = useState({
-      states: false,
-      cities: false,
-   });
-   const [suggestions, setSuggestions] = useState<Suggestions>({
-      language: { loading: false, value: [], selected: data.language || [], error: "" },
-      skill: { loading: false, value: [], selected: data.skill || [], error: "" },
-      qualification: { loading: false, value: [], selected: data.qualification || [], error: "" },
-   });
-   const suggestionsRef = useRef<{ [key: string]: HTMLInputElement }>({});
 
-
-   const fetchStates = useCallback(async (value: string) => {
-      try {
-         setLocationLoading((prev) => ({ ...prev, states: true }));
-         setLocation((prev) => ({ ...prev, cities: [] }));
-         const result = await ServerFetch(`/state/listing?country_id=${value}`, {
-            headers: { "Content-Type": "application/json" },
-            next: { revalidate: 5, tags: ["State"] },
-         });
-         if (Array.isArray(result?.data)) {
-            setLocation((prev) => ({ ...prev, states: result?.data }));
-            setValue("state", data.country === value ? values.state : "");
-         }
-      } catch (error) {
-         console.log(error);
-      } finally {
-         setLocationLoading((prev) => ({ ...prev, states: false }));
-      }
-   }, []);
-
-   const fetchCities = useCallback(async (value: string) => {
-      try {
-         setLocationLoading((prev) => ({ ...prev, cities: true }));
-         const result = await ServerFetch(`/city/listing?state_id=${value}`, {
-            headers: { "Content-Type": "application/json" },
-            next: { revalidate: 5, tags: ["City"] },
-         });
-         if (Array.isArray(result?.data)) {
-            setLocation((prev) => ({ ...prev, cities: result?.data }));
-            setValue("city", data.state === value ? values.city : "");
-         }
-      } catch (error) {
-         console.log(error);
-      } finally {
-         setLocationLoading((prev) => ({ ...prev, cities: false }));
-      }
-   }, []);
-
-
-   const fetchSuggestions = async (
-      name: string,
-      query: string
-   ): Promise<{ value: string; label: string }[]> => {
-      if (!query) return [];
-
-      let sourceData: any[] = [];
-
-      switch (name) {
-         case 'qualification':
-            sourceData = allQualifications;
-            break;
-         case 'skill':
-            sourceData = allSkills;
-            break;
-         case 'language':
-            sourceData = allLanguages;
-            break;
-         default:
-            return [];
-      }
-
-      const lowerQuery = query.toLowerCase();
-
-      const filtered = sourceData
-         .filter((item) => item?.label && item.label.toLowerCase().includes(lowerQuery))
-         .map((item) => ({
-            value: item.id?.toString() ?? item.value,
-            label: item.label ?? '',
-         }));
-
-      return filtered;
-   };
-
-   const handleLanguageInputChange = async (query: string) => {
-      setSuggestions((prev) => ({
-         ...prev,
-         language: {
-            ...prev.language,
-            loading: true,
-         },
-      }));
-
-      const data = await fetchSuggestions("language", query);
-
-      setSuggestions((prev) => ({
-         ...prev,
-         language: {
-            ...prev.language,
-            loading: false,
-            value: data,
-         },
-      }));
-   };
-
-
-   const handleSkillInputChange = async (query: string) => {
-      setSuggestions((prev) => ({
-         ...prev,
-         skill: {
-            ...prev.skill,
-            loading: true,
-         },
-      }));
-
-      const data = await fetchSuggestions("skill", query);
-
-      setSuggestions((prev) => ({
-         ...prev,
-         skill: {
-            ...prev.skill,
-            loading: false,
-            value: data,
-         },
-      }));
-   };
-
-
-   const handleQualificationInputChange = async (query: string) => {
-      setSuggestions((prev) => ({
-         ...prev,
-         qualification: {
-            ...prev.qualification,
-            loading: true,
-         },
-      }));
-
-      const data = await fetchSuggestions("qualification", query);
-
-      setSuggestions((prev) => ({
-         ...prev,
-         qualification: {
-            ...prev.qualification,
-            loading: false,
-            value: data,
-         },
-      }));
-   };
-
-
-
-   const genrateMultipleInputValueArray = (input: Array<AutoFillInputSuggestion>) => {
-      if (!Array.isArray(input)) return;
-
-      return input.map((i) => `${i.value}`);
-   };
-   const [isNSelectLoading, setNSelectLoading] = useState<boolean>(true)
-   const getAllMasterData = async () => {
-      try {
-         const [qualificationRes, skillRes, languageRes] = await Promise.all([
-            ServerFetch(`/qualification/listing`, {
-               headers: { "Content-Type": "application/json" },
-               next: { revalidate: 120 },
-            }),
-            ServerFetch(`/skill/listing`, {
-               headers: { "Content-Type": "application/json" },
-               next: { revalidate: 120 },
-            }),
-            ServerFetch(`/language/listing`, {
-               headers: { "Content-Type": "application/json" },
-               next: { revalidate: 120 },
-            }),
-         ]);
-
-         // console.log("Qualifications:", qualificationRes.data);
-         // console.log("Skills:", skillRes.data);
-         // console.log("Languages:", languageRes.data);
-
-         setAllQualifications(Array.isArray(qualificationRes.data) ? qualificationRes.data : []);
-         setAllSkills(Array.isArray(skillRes.data) ? skillRes.data : []);
-         setAllLanguages(Array.isArray(languageRes.data) ? languageRes.data : []);
-         setNSelectLoading(false)
-      } catch (error) {
-         console.error("Error fetching master data:", error);
-         setAllQualifications([]);
-         setAllSkills([]);
-         setAllLanguages([]);
-      } finally {
-         setNSelectLoading(false)
-      }
-   };
-
+   // Fetch master data on component mount
    useEffect(() => {
-      getAllMasterData();
-   }, []);
+      const fetchMasterData = async () => {
+         try {
+            const [qualificationRes, skillRes, languageRes] = await Promise.all([
+               ServerFetch(`/qualification/listing`, {
+                  headers: { "Content-Type": "application/json" },
+                  next: { revalidate: 120 },
+               }),
+               ServerFetch(`/skill/listing`, {
+                  headers: { "Content-Type": "application/json" },
+                  next: { revalidate: 120 },
+               }),
+               ServerFetch(`/language/listing`, {
+                  headers: { "Content-Type": "application/json" },
+                  next: { revalidate: 120 },
+               }),
+            ]);
 
-   const validateMultipleInputs = () => {
-      const values = {
-         qualification: genrateMultipleInputValueArray(suggestions.qualification.selected),
-         skill: genrateMultipleInputValueArray(suggestions.skill.selected),
-         language: genrateMultipleInputValueArray(suggestions.language.selected),
+            setMasterData({
+               qualifications: Array.isArray(qualificationRes.data) ? qualificationRes.data : [],
+               skills: Array.isArray(skillRes.data) ? skillRes.data : [],
+               languages: Array.isArray(languageRes.data) ? languageRes.data : [],
+            });
+
+            // Initialize form data with existing values
+            if (data.qualification?.length) {
+               const qualificationNos = data.qualification.map((option: { value: string }) => +option.value);
+               const selectedQualifications = qualificationRes.data.filter((qual: Qualification) =>
+                  qualificationNos.includes(qual.value)
+               );
+               setFormData(prev => ({
+                  ...prev,
+                  educationalInfo: {
+                     ...prev.educationalInfo,
+                     qualifications: selectedQualifications,
+                  }
+               }));
+            }
+
+            if (data.skill?.length) {
+               const selectedSkills = data.skill.map((skill: any) => ({
+                  label: skill.label,
+                  value: skill.value,
+               }));
+               setFormData(prev => ({
+                  ...prev,
+                  educationalInfo: {
+                     ...prev.educationalInfo,
+                     skills: selectedSkills,
+                  }
+               }));
+            }
+
+            if (data.language?.length) {
+               const selectedLanguages = data.language.map((lang: any) => ({
+                  label: lang.label,
+                  value: lang.value,
+               }));
+               setFormData(prev => ({
+                  ...prev,
+                  educationalInfo: {
+                     ...prev.educationalInfo,
+                     languages: selectedLanguages,
+                  }
+               }));
+            }
+         } catch (error) {
+            console.error("Error fetching master data:", error);
+         } finally {
+            setIsLoadingMasterData(false);
+         }
       };
-      let isValid = true;
-      let errorItem = "";
 
-      for (const value in values) {
-         const val = value as "skill" | "language" | "qualification";
+      fetchMasterData();
+   }, [data]);
 
-         // Skip qualification validation for a specific user type
-         if (val === "qualification" && data.user_type === "institute") {
-            continue; // Skip validation for qualification
-         }
-
-         if (values[val]?.length === 0) {
-            isValid = false;
-            if (!errorItem) {
-               errorItem = val;
-            }
-            setSuggestions((prev) => ({
-               ...prev,
-               [val]: { ...prev[val], error: "This is a required field." }
-            }));
-         }
-      }
-
-      if (errorItem) {
-         console.log(errorItem);
-         if (suggestionsRef.current?.[errorItem]) {
-            suggestionsRef.current[errorItem].focus();
-            suggestionsRef.current[errorItem].scrollIntoView({ behavior: "smooth", block: "center" });
-         }
-      }
-
-      return { isValid, values };
-   };
-
-
-   const handleUpdateProfilePicture = async (session: Session) => {
-      // console.log("formdata profile picture", profileImages);
+   // Location data fetching
+   const fetchStates = useCallback(async (countryId: string) => {
       try {
-         if (!profileImages.file || !session.user) return "no-change";
-         const formdata = new FormData();
-         formdata.append("profile_pic", profileImages.file);
-         formdata.append("preview_profile_pic", profileImages.preview_profile_pic || "");
-         formdata.append("user_id", String(session.user.userId));
-         const result = await ServerFetch("/user/update/profile-pic", {
-            method: "POST",
-            headers: {
-               Authorization: `Bearer ${session.user.token}`,
-            },
-            body: formdata,
-            cache: "no-store",
-         });
-         if (!result.status) {
-            throw new Error("Unable to update your profile picture at the momemnt.");
-         }
+         setLocationLoading(prev => ({ ...prev, states: true }));
+         setLocation(prev => ({ ...prev, cities: [] }));
 
-         return result.data;
-      } catch (error) {
-         let m = "Unable to update your profile picture at the momemnt.";
-         if (error instanceof Error) {
-            m = error.message;
-         }
-         ErrorToast(m);
-      }
-   };
-
-   const handleUpdatePersonalInfo = async (session: Session, data: FieldValues) => {
-      try {
-         if (!session.user) return;
-
-         const dataToSubmit = {
-            user_id: session.user.userId,
-            f_name: data.f_name,
-            email: data.email,
-            phone: data.phone,
-            bio: bioEditor?.bio,
-            highlights: addHighlights?.highlights,
-            country: data.country,
-            state: data.state,
-            city: data.city,
-            address: data.address,
-            gst_no: data.gst_no || "",
-            postcode: data.postcode,
-            area: data.area,
-         };
-
-         const result = await ServerFetch("/user/update/personal-info", {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-               Authorization: `Bearer ${session.user.token}`,
-            },
-            body: JSON.stringify(dataToSubmit),
-            cache: "no-store",
+         const result = await ServerFetch(`/state/listing?country_id=${countryId}`, {
+            headers: { "Content-Type": "application/json" },
+            next: { revalidate: 0, tags: ["State"] },
          });
 
-         if (!result.status) {
-            throw new Error("Unable to update your personal information at the moment.");
-         }
-         return true;
-      } catch (error) {
-         let m = "Unable to update your personal information at the moment.";
-         if (error instanceof Error) {
-            m = error.message;
-         }
-         ErrorToast(m);
-      }
-   };
-
-   const handleUpdateQualificationInfo = async (session: Session, data: { [key: string]: Array<string | number> }) => {
-      try {
-         if (!session.user) return;
-         const dataToSubmit = {
-            user_id: session.user.userId,
-            year_of_exp: values.year_of_exp ? +values.year_of_exp : 0,
-            // qualification: JSON.stringify(data.qualification),
-            // skill: JSON.stringify(data.skill),
-            // language: JSON.stringify(data.language) || JSON.stringify(nselectedLanguage),
-            qualification: JSON.stringify(nselectedQualification?.map((option) => option.value.toString())),
-            skill: JSON.stringify(nselectedSkills?.map((option) => option.value)),
-            language: JSON.stringify(nselectedLanguage?.map((option) => option.value)),
-         };
-         console.log("dataToSubmit", dataToSubmit);
-         const result = await ServerFetch("/user/update/educational-info", {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-               Authorization: `Bearer ${session.user.token}`,
-            },
-            body: JSON.stringify(dataToSubmit),
-            cache: "no-store",
-         });
-
-         if (!result.status) {
-            throw new Error("Unable to update your educational information at the moment.");
-         }
-         return true;
-      } catch (error) {
-         let m = "Unable to update your educational information at the moment.";
-         if (error instanceof Error) {
-            m = error.message;
-         }
-         ErrorToast(m);
-      }
-   };
-
-   const handleFormSubmit = async (d: FieldValues) => {
-      if (!values.area) {
-         return;
-      }
-
-      try {
-         setSubmitting(true);
-         const session = await getSession();
-         //Validation educational qualification
-         const { isValid, values } = validateMultipleInputs();
-         if (!session || !isValid) {
-            setSubmitting(false);
-            return;
-         }
-         const [profilePic, basicDetails, educationalDetails] = await Promise.allSettled<
-            Array<Promise<"no-change" | any>>
-         >([
-            handleUpdateProfilePicture(session),
-            handleUpdatePersonalInfo(session, d),
-            handleUpdateQualificationInfo(session, values as { [key: string]: Array<string | number> }),
-         ]);
-
-         const data = {
-            profilePicture: session.user.profilePicture,
-            fullName: session.user.fullName,
-         };
-         if (profilePic.status === "fulfilled" && profilePic.value && profilePic.value !== "no-change") {
-            data.profilePicture = profilePic.value.profile_pic;
-            SuccessToast("Profile picture updated succesfully.");
-         }
-         if (basicDetails.status === "fulfilled" && basicDetails.value) {
-            data.fullName = d.f_name;
-            SuccessToast("Your basic informations updated succesfully.");
-         }
-         if (educationalDetails.status === "fulfilled" && educationalDetails.value) {
-            SuccessToast("Your educational informations updated succesfully.");
-         }
-         await update(data);
-         // RevalidatePath("/dashboard/profile", "page");
-         if (SubscriptionTakenTillNow == 'false') {
-            if (SubscriptionTakenTillNow == 'false' && CourseExists == "false") {
-               router.push(dashboardLinks.addCourses);
-            } else {
-               router.push(dashboardLinks.courses);
-            }
-         } else {
-            router.push(dashboardLinks.profile)
+         if (Array.isArray(result?.data)) {
+            setLocation(prev => ({ ...prev, states: result?.data }));
+            setValue("state", data.country === countryId ? values.state : "");
          }
       } catch (error) {
          console.log(error);
       } finally {
-         setSubmitting(false);
+         setLocationLoading(prev => ({ ...prev, states: false }));
       }
-   };
+   }, []);
+
+   const fetchCities = useCallback(async (stateId: string) => {
+      try {
+         setLocationLoading(prev => ({ ...prev, cities: true }));
+         const result = await ServerFetch(`/city/listing?state_id=${stateId}`, {
+            headers: { "Content-Type": "application/json" },
+            next: { revalidate: 0, tags: ["City"] },
+         });
+
+         if (Array.isArray(result?.data)) {
+            setLocation(prev => ({ ...prev, cities: result?.data }));
+            setValue("city", data.state === stateId ? values.city : "");
+         }
+      } catch (error) {
+         console.log(error);
+      } finally {
+         setLocationLoading(prev => ({ ...prev, cities: false }));
+      }
+   }, []);
 
    useEffect(() => {
       if (values.country) {
@@ -530,76 +287,259 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
          fetchCities(values.state);
       }
    }, [values.state]);
-   useEffect(() => {
-      if (suggestions.language.selected && allLanguages?.length && suggestions.skill.selected) {
-         const allSelectedLanguage = suggestions.language.selected.map((lang) => ({
-            label: lang.label,
-            value: String(lang.value),
-         }));
-         const allSelectedSkills = suggestions.skill.selected.map((skill) => ({
-            label: skill.label,
-            value: String(skill.value),
-         }));
-         setNSelectedLanguage(allSelectedLanguage);
-         setNSelectedSkills(allSelectedSkills);
+
+   // Form handlers
+   const handleProfilePicChange = (src: string, blurDataURL: string, file: File | null) => {
+      setFormData(prev => ({
+         ...prev,
+         personalInfo: {
+            ...prev.personalInfo,
+            profilePic: {
+               src,
+               preview_profile_pic: blurDataURL,
+               file,
+            }
+         }
+      }));
+   };
+
+   const handleBioChange = (value: string) => {
+      setFormData(prev => ({
+         ...prev,
+         personalInfo: {
+            ...prev.personalInfo,
+            bio: value
+         }
+      }));
+   };
+
+   const handleHighlightsChange = (value: string) => {
+      setFormData(prev => ({
+         ...prev,
+         personalInfo: {
+            ...prev.personalInfo,
+            highlights: value
+         }
+      }));
+   };
+
+   const handleAreaSelect = (areaName: string) => {
+      setValue("area", areaName);
+      clearErrors("area");
+      setFormData(prev => ({
+         ...prev,
+         personalInfo: {
+            ...prev.personalInfo,
+            area: areaName
+         }
+      }));
+   };
+
+   // API call handlers
+   const handleUpdateProfilePicture = async (session: Session) => {
+      try {
+         if (!formData.personalInfo.profilePic.file || !session.user) return "no-change";
+
+         const formdata = new FormData();
+         formdata.append("profile_pic", formData.personalInfo.profilePic.file);
+         formdata.append("preview_profile_pic", formData.personalInfo.profilePic.preview_profile_pic || "");
+         formdata.append("user_id", String(session.user.userId));
+
+         const result = await ServerFetch("/user/update/profile-pic", {
+            method: "POST",
+            headers: {
+               Authorization: `Bearer ${session.user.token}`,
+            },
+            body: formdata,
+            cache: "no-store",
+         });
+
+         if (!result.status) {
+            throw new Error("Unable to update your profile picture at the moment.");
+         }
+
+         return result.data;
+      } catch (error) {
+         let message = "Unable to update your profile picture at the moment.";
+         if (error instanceof Error) {
+            message = error.message;
+         }
+         ErrorToast(message);
+         throw error;
+      }
+   };
+
+   const handleUpdatePersonalInfo = async (session: Session) => {
+      try {
+         if (!session.user) return;
+
+         const result = await ServerFetch("/user/update/personal-info", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${session.user.token}`,
+            },
+            body: JSON.stringify({
+               user_id: session.user.userId,
+               ...formData.personalInfo,
+               profilePic: undefined // Remove profilePic from the payload
+            }),
+            cache: "no-store",
+         });
+
+         if (!result.status) {
+            throw new Error("Unable to update your personal information at the moment.");
+         }
+         return true;
+      } catch (error) {
+         let message = "Unable to update your personal information at the moment.";
+         if (error instanceof Error) {
+            message = error.message;
+         }
+         ErrorToast(message);
+         throw error;
+      }
+   };
+
+   const handleUpdateEducationalInfo = async (session: Session) => {
+      try {
+         if (!session.user) return;
+
+         const result = await ServerFetch("/user/update/educational-info", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${session.user.token}`,
+            },
+            body: JSON.stringify({
+               user_id: session.user.userId,
+               year_of_exp: formData.educationalInfo.year_of_exp,
+               qualification: JSON.stringify(formData.educationalInfo.qualifications.map(q => q.value.toString())),
+               skill: JSON.stringify(formData.educationalInfo.skills.map(s => s.value)),
+               language: JSON.stringify(formData.educationalInfo.languages.map(l => l.value)),
+            }),
+            cache: "no-store",
+         });
+
+         if (!result.status) {
+            throw new Error("Unable to update your educational information at the moment.");
+         }
+         return true;
+      } catch (error) {
+         let message = "Unable to update your educational information at the moment.";
+         if (error instanceof Error) {
+            message = error.message;
+         }
+         ErrorToast(message);
+         throw error;
+      }
+   };
+
+   // Form validation
+   const validateForm = () => {
+      let isValid = true;
+
+      // Personal info validation
+      if (!formData.personalInfo.area) {
+         setError("area", { type: "required", message: "This field is required." });
+         areaContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+         isValid = false;
       }
 
-   }, [suggestions, allLanguages, allSkills]);
-
-   useEffect(() => {
-      if (allQualifications && data?.qualification?.length) {
-         const qualificationNo = data.qualification.map((option: { value: string }) => +option.value);
-
-         const selected = allQualifications.filter((qual) => qualificationNo.includes(qual.value));
-         setNSelectedQualification(selected);
-      } else {
-         console.log("hello");
+      // Educational info validation
+      if (formData.educationalInfo.qualifications.length === 0 && data.user_type !== "institute") {
+         setError("qualifications" as any, { type: "required", message: "At least one qualification is required." });
+         isValid = false;
       }
-   }, [allQualifications, data?.qualification]);
 
+      if (formData.educationalInfo.skills.length === 0) {
+         setError("skills" as any, { type: "required", message: "At least one skill is required." });
+         isValid = false;
+      }
 
+      if (formData.educationalInfo.languages.length === 0) {
+         setError("languages" as any, { type: "required", message: "At least one language is required." });
+         isValid = false;
+      }
 
+      return isValid;
+   };
+
+   // Form submission
+   const handleFormSubmit = async (formValues: FieldValues) => {
+      if (!validateForm()) return;
+
+      try {
+         setSubmitting(true);
+         const session = await getSession();
+         if (!session) return;
+
+         const [profilePicResult, personalInfoResult, educationalInfoResult] = await Promise.allSettled([
+            handleUpdateProfilePicture(session),
+            handleUpdatePersonalInfo(session),
+            handleUpdateEducationalInfo(session),
+         ]);
+
+         const updatedData: any = {
+            profilePicture: session.user.profilePicture,
+            fullName: session.user.fullName,
+         };
+
+         if (profilePicResult.status === "fulfilled" && profilePicResult.value !== "no-change") {
+            updatedData.profilePicture = profilePicResult.value?.profile_pic;
+            SuccessToast("Profile picture updated successfully.");
+         }
+
+         if (personalInfoResult.status === "fulfilled" && personalInfoResult.value) {
+            updatedData.fullName = formData.personalInfo.f_name;
+            SuccessToast("Your basic information updated successfully.");
+         }
+
+         if (educationalInfoResult.status === "fulfilled" && educationalInfoResult.value) {
+            SuccessToast("Your educational information updated successfully.");
+         }
+
+         await update(updatedData);
+
+         if (SubscriptionTakenTillNow === 'false') {
+            router.push(CourseExists === "false" ? dashboardLinks.addCourses : dashboardLinks.courses);
+         } else {
+            router.push(dashboardLinks.profile);
+         }
+      } catch (error) {
+         console.error("Error updating profile:", error);
+      } finally {
+         setSubmitting(false);
+      }
+   };
 
    return (
       <form
-         onSubmit={(e) => {
-            e.preventDefault();
-
-            if (!values.area) {
-               areaContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-               setError("area", { type: "required", message: "This field is required." });
-            }
-            if (submitting) return;
-            validateMultipleInputs();
-            handleSubmit(handleFormSubmit)(e);
-         }}
+         onSubmit={handleSubmit(handleFormSubmit)}
          className="relative"
       >
          <fieldset className="epf" disabled={submitting}>
             <h1 className="subtitle">Edit Profile</h1>
+
+            {/* Profile Picture */}
             <ProfilePicPicker
                src={
-                  data.profile_pic === profileImages.src
+                  data.profile_pic === formData.personalInfo.profilePic.src
                      ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/${data.profile_pic}`
-                     : profileImages.src || "/img/common/logo-icon.svg"
+                     : formData.personalInfo.profilePic.src || "/img/common/logo-icon.svg"
                }
                alt="Profile Image"
-               blurDataURL={profileImages.preview_profile_pic || LOGO_ICON_PREVIEW}
+               blurDataURL={formData.personalInfo.profilePic.preview_profile_pic || LOGO_ICON_PREVIEW}
                loading="eager"
-               onChange={(src, blurDataURL, file) => {
-                  setProfileImages({
-                     src,
-                     preview_profile_pic: blurDataURL,
-                     file,
-                  });
-               }}
+               onChange={handleProfilePicChange}
             />
-            <h2 className="dash-subtitle">Personal Information</h2>
 
+            {/* Personal Information Section */}
+            <h2 className="dash-subtitle">Personal Information</h2>
             <div className="epf__info--container">
                <div>
                   <label htmlFor="fullName" className="label">
-                     Full Name
+                     Full Name <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                      type="text"
@@ -608,17 +548,22 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                      autoComplete="name"
                      placeholder="Full Name"
                      {...register("f_name", {
-                        required: {
-                           value: true,
-                           message: "This field is required.",
-                        },
+                        required: "This field is required.",
+                        onChange: (e) => setFormData(prev => ({
+                           ...prev,
+                           personalInfo: {
+                              ...prev.personalInfo,
+                              f_name: e.target.value
+                           }
+                        }))
                      })}
                   />
                   {errors.f_name && <p className="error">{errors.f_name.message}</p>}
                </div>
+
                <div>
                   <label htmlFor="phone" className="label">
-                     Phone
+                     Phone <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                      type="tel"
@@ -628,17 +573,15 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                      autoComplete="mobile tel"
                      disabled
                      {...register("phone", {
-                        required: {
-                           value: true,
-                           message: "This field is required.",
-                        },
+                        required: "This field is required.",
                      })}
                   />
                   {errors.phone && <p className="error">{errors.phone.message}</p>}
                </div>
+
                <div>
                   <label htmlFor="email" className="label">
-                     Email
+                     Email <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                      type="email"
@@ -648,31 +591,30 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                      autoComplete="email"
                      disabled
                      {...register("email", {
-                        required: {
-                           value: true,
-                           message: "This field is required.",
-                        },
+                        required: "This field is required.",
                      })}
                   />
                   {errors.email && <p className="error">{errors.email.message}</p>}
                </div>
+
                <div>
                   <label htmlFor="country" className="label">
-                     Select Country
+                     Select Country <span className="text-red-500 ml-1">*</span>
                   </label>
                   <select
                      className="select"
                      {...register("country", {
-                        required: {
-                           value: true,
-                           message: "This field is required.",
-                        },
-                        value: data.countries?.length > 0 ? values.country : "",
+                        required: "This field is required.",
+                        onChange: (e) => setFormData(prev => ({
+                           ...prev,
+                           personalInfo: {
+                              ...prev.personalInfo,
+                              country: e.target.value
+                           }
+                        }))
                      })}
                   >
-                     <option value="" disabled>
-                        Please Select
-                     </option>
+                     <option value="" disabled>Please Select</option>
                      {data.countries?.map((country) => (
                         <option key={country.value} value={country.value}>
                            {country.label}
@@ -681,18 +623,23 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                   </select>
                   {errors.country && <p className="error">{errors.country.message}</p>}
                </div>
+
                {values.country && !locationLoading.states && (
                   <div>
                      <label htmlFor="state" className="label">
-                        Select State
+                        Select State <span className="text-red-500 ml-1">*</span>
                      </label>
                      <select
                         className="select"
                         {...register("state", {
-                           required: {
-                              value: true,
-                              message: "This field is required.",
-                           },
+                           required: "This field is required.",
+                           onChange: (e) => setFormData(prev => ({
+                              ...prev,
+                              personalInfo: {
+                                 ...prev.personalInfo,
+                                 state: e.target.value
+                              }
+                           }))
                         })}
                      >
                         <option value="">Please Select</option>
@@ -705,18 +652,23 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                      {errors.state && <p className="error">{errors.state.message}</p>}
                   </div>
                )}
+
                {(values.state || !values.state) && !locationLoading.cities && !locationLoading.states && (
                   <div>
                      <label htmlFor="city" className="label">
-                        Select City
+                        Select City <span className="text-red-500 ml-1">*</span>
                      </label>
                      <select
                         className="select"
                         {...register("city", {
-                           required: {
-                              value: true,
-                              message: "This field is required.",
-                           },
+                           required: "This field is required.",
+                           onChange: (e) => setFormData(prev => ({
+                              ...prev,
+                              personalInfo: {
+                                 ...prev.personalInfo,
+                                 city: e.target.value
+                              }
+                           }))
                         })}
                      >
                         <option value="">Please Select</option>
@@ -730,26 +682,23 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                   </div>
                )}
 
-               {/* AREA */}
+               {/* Area */}
                <div>
                   <label htmlFor="area" className="label" ref={areaContainerRef}>
-                     Area
+                     Area <span className="text-red-500 ml-1">*</span>
                   </label>
                   <GoogleAddressAutofill
                      restrictionType={["sublocality"]}
-                     onSelect={(areaName) => {
-                        setValue("area", areaName);
-                        clearErrors("area");
-                     }}
-                     defaultValue={values.area || ""}
+                     onSelect={handleAreaSelect}
+                     defaultValue={formData.personalInfo.area || ""}
                      focus={!!errors.area}
                   />
-
                   {errors.area && <p className="error">{errors.area.message}</p>}
                </div>
+
                <div>
                   <label htmlFor="address" className="label">
-                     Address
+                     Address <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                      type="text"
@@ -758,17 +707,22 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                      placeholder="Address"
                      autoComplete="address-line1"
                      {...register("address", {
-                        required: {
-                           value: true,
-                           message: "This field is required.",
-                        },
+                        required: "This field is required.",
+                        onChange: (e) => setFormData(prev => ({
+                           ...prev,
+                           personalInfo: {
+                              ...prev.personalInfo,
+                              address: e.target.value
+                           }
+                        }))
                      })}
                   />
                   {errors.address && <p className="error">{errors.address.message}</p>}
                </div>
+
                <div>
                   <label htmlFor="postcode" className="label">
-                     Postcode
+                     Postcode <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                      type="text"
@@ -777,10 +731,14 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                      autoComplete="postal-code"
                      placeholder="Postcode"
                      {...register("postcode", {
-                        required: {
-                           value: true,
-                           message: "This field is required.",
-                        },
+                        required: "This field is required.",
+                        onChange: (e) => setFormData(prev => ({
+                           ...prev,
+                           personalInfo: {
+                              ...prev.personalInfo,
+                              postcode: e.target.value
+                           }
+                        }))
                      })}
                   />
                   {errors.postcode && <p className="error">{errors.postcode.message}</p>}
@@ -800,160 +758,128 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                            matchPattern: (value) => {
                               if (value) {
                                  return (
-                                    /^[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}[1-9A-Za-z]{1}[Z|z][0-9A-Za-z]{1}$/g.test(
-                                       value
-                                    ) || "Please enter a valid GST number."
+                                    /^[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}[1-9A-Za-z]{1}[Z|z][0-9A-Za-z]{1}$/g.test(value) ||
+                                    "Please enter a valid GST number."
                                  );
                               }
                            },
                         },
+                        onChange: (e) => setFormData(prev => ({
+                           ...prev,
+                           personalInfo: {
+                              ...prev.personalInfo,
+                              gst_no: e.target.value
+                           }
+                        }))
                      })}
                   />
                   {errors.gst_no && <p className="error">{errors.gst_no.message}</p>}
                </div>
             </div>
 
-            {/* <div>
-               <label htmlFor="courseContent">Highlight</label>
-
-               <Tiptap
-                  content={data?.highlights as string}
-                  onChange={(value: string) => {
-                     const temp = { ...data };
-                     temp.highlights = value;
-                     setAddHighlights(temp);
-                  }}
-               />
-               {errors.highlights && <p className="error">{errors.highlights.message}</p>}
-            </div> */}
+            {/* Bio */}
             <div>
                <label htmlFor="bio">Bio</label>
-
                <Tiptap
-                  content={data?.bio as string}
-                  onChange={(value: string) => {
-                     const temp = { ...data };
-                     temp.bio = value;
-                     setBioEditor(temp);
-                  }}
+                  content={formData.personalInfo.bio as string}
+                  onChange={handleBioChange}
                />
                {errors.bio && <p className="error">{errors.bio.message}</p>}
             </div>
+
             <Separator />
 
+            {/* Skills and Qualification Section */}
             <h2 className="dash-subtitle">Skills and Qualification</h2>
             <div className="epf__info--container">
-               {/* {data.user_type === "institute" ? (
-                  ""
-               ) : (
-                  <div>
-                     <AutoFillInput
-                        qualificationToggle={true}
-                        label="Qualification"
-                        id="qualification"
-                        suggestions={suggestions.qualification.value}
-                        selectedSuggestions={suggestions.qualification.selected}
-                        onSuggestionRemove={(suggestion) => {
-                           const filteredSelectedQualification = suggestions.qualification.selected.filter(
-                              (item) => item.value !== suggestion.value
-                           );
-                           setSuggestions((prev) => ({
+               {/* Qualifications */}
+               <div>
+                  <label htmlFor="qualification" className="label">
+                     Qualification <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  {isLoadingMasterData ? (
+                     <Skeleton height={40} />
+                  ) : (
+                     <>
+                        <Select
+                           isMulti
+                           value={formData.educationalInfo.qualifications}
+                           onChange={(selected) => setFormData(prev => ({
                               ...prev,
-                              qualification: {
-                                 ...prev.qualification,
-                                 selected: filteredSelectedQualification,
-                              },
-                           }));
-                        }}
-                        onSuggestionSelect={(qualification) => {
-                           console.log("qualification", qualification);
-                           const index = suggestions.qualification.selected.findIndex(
-                              (item) => item.value === qualification.value
-                           );
-                           if (index >= 0) return;
-                           setSuggestions((prev) => ({
+                              educationalInfo: {
+                                 ...prev.educationalInfo,
+                                 qualifications: selected as MultiValue<SelectOption>
+                              }
+                           }))}
+                           options={masterData.qualifications}
+                           placeholder="Select Qualification"
+                           required
+                        />
+                        {errors.qualification && <p className="error">{errors.qualification.message}</p>}
+                     </>
+                  )}
+               </div>
+
+               {/* Skills */}
+               <div>
+                  <label htmlFor="skill" className="label">
+                     Skills <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  {isLoadingMasterData ? (
+                     <Skeleton height={40} />
+                  ) : (
+                     <>
+                        <Select
+                           isMulti
+                           value={formData.educationalInfo.skills}
+                           onChange={(selected) => setFormData(prev => ({
                               ...prev,
-                              qualification: {
-                                 ...prev.qualification,
-                                 selected: [...prev.qualification.selected, qualification],
-                                 error: "",
-                              },
-                           }));
-                        }}
-                        onInputValueChange={(value) => {
-                           handleQualificationInputChange(value);
-                        }}
-                        loadingSuggestions={suggestions.qualification.loading}
-                        ref={(ref: HTMLInputElement) => {
-                           suggestionsRef.current.qualification = ref;
-                        }}
-                     />
-                     {suggestions.qualification.error && <p className="error">{suggestions.qualification.error}</p>}
-                  </div>
-               )} */}
-               <div>
-                  <label htmlFor={"qualification"} className="label">
-                     {"Qualification"}
-                  </label>
-                  {isNSelectLoading ? (
-                     <Skeleton height={40} />) :
-                     (
-                        <>
-                           <Select
-                              isMulti
-                              value={nselectedQualification}
-                              onChange={(selected) => setNSelectedQualification(selected as MultiValue<SelectOption>)}
-                              options={allQualifications}
-                              placeholder={"Select Qualification"}
-                              required
-                           />
-                           {suggestions.qualification.error && <p className="error">{suggestions.qualification.error}</p>}
-                        </>)
-                  }
+                              educationalInfo: {
+                                 ...prev.educationalInfo,
+                                 skills: selected as MultiValue<SelectOption>
+                              }
+                           }))}
+                           options={masterData.skills}
+                           placeholder="Select Skills"
+                           required
+                        />
+                        {errors.skill && <p className="error">{errors.skill.message}</p>}
+                     </>
+                  )}
                </div>
+
+               {/* Languages */}
                <div>
-                  <label htmlFor={"skill"} className="label">
-                     {"Skills"}
+                  <label htmlFor="language" className="label">
+                     Language <span className="text-red-500 ml-1">*</span>
                   </label>
-                  {isNSelectLoading ? (
-                     <Skeleton height={40} />) :
-                     (
-                        <>
-                           <Select
-                              isMulti
-                              value={nselectedSkills}
-                              onChange={(selected) => setNSelectedSkills(selected as MultiValue<SelectOption>)}
-                              options={allSkills}
-                              placeholder={"Select Skills"}
-                              required
-                           />
-                           {suggestions.skill.error && <p className="error">{suggestions.skill.error}</p>}
-                        </>)
-                  }
+                  {isLoadingMasterData ? (
+                     <Skeleton height={40} />
+                  ) : (
+                     <>
+                        <Select
+                           isMulti
+                           value={formData.educationalInfo.languages}
+                           onChange={(selected) => setFormData(prev => ({
+                              ...prev,
+                              educationalInfo: {
+                                 ...prev.educationalInfo,
+                                 languages: selected as MultiValue<SelectOption>
+                              }
+                           }))}
+                           options={masterData.languages}
+                           placeholder="Select Language"
+                           required
+                        />
+                        {errors.language && <p className="error">{errors.language.message}</p>}
+                     </>
+                  )}
                </div>
-               <div>
-                  <label htmlFor={"language"} className="label">
-                     {"Language"}
-                  </label>
-                  {isNSelectLoading ? (
-                     <Skeleton height={40} />) :
-                     (
-                        <>
-                           <Select
-                              isMulti
-                              value={nselectedLanguage}
-                              onChange={(selected) => setNSelectedLanguage(selected as MultiValue<SelectOption>)}
-                              options={allLanguages}
-                              placeholder={"Select Language"}
-                              required
-                           />
-                           {suggestions.language.error && <p className="error">{suggestions.language.error}</p>}
-                        </>
-                     )}
-               </div>
+
+               {/* Experience */}
                <div>
                   <label htmlFor="experience" className="label">
-                     Experience in Years
+                     Experience in Years <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                      type="number"
@@ -962,14 +888,18 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                      step="0.1"
                      min="0"
                      {...register("year_of_exp", {
-                        required: {
-                           value: true,
-                           message: "This field is required.",
-                        },
+                        required: "This field is required.",
                         min: {
                            value: 0,
                            message: "Please enter a valid Experience (in years).",
                         },
+                        onChange: (e) => setFormData(prev => ({
+                           ...prev,
+                           educationalInfo: {
+                              ...prev.educationalInfo,
+                              year_of_exp: parseFloat(e.target.value) || 0
+                           }
+                        }))
                      })}
                      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                         if (Number(e.target.value) < 0) e.target.value = "";
@@ -979,8 +909,8 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                </div>
             </div>
 
-            <input type="submit" hidden disabled={submitting} />
-            <div className={"epf__buttons--container"}>
+            {/* Form Actions */}
+            <div className="epf__buttons--container">
                <button
                   type="button"
                   className={`button__transparent ${submitting ? "opacity-80 !cursor-not-allowed" : ""}`}
@@ -998,6 +928,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                </button>
             </div>
          </fieldset>
+
          {submitting && (
             <div aria-haspopup className="fixed z-10 inset-0 bg-[#ffffff99]">
                <Loading />

@@ -123,7 +123,7 @@ function FilterSearch({
    useEffect(() => {
       if (initialRender.current) {
          initialRender.current = false;
-         return () => {};
+         return () => { };
       }
 
       if (showFilters) {
@@ -147,7 +147,7 @@ function FilterSearch({
 
       const result: ApiResponse = await ServerFetch(url, {
          headers: { "Content-Type": "application/json" },
-         next: { revalidate: 5 },
+         next: { revalidate: 0 },
       });
       setFilterList(result?.data);
    };

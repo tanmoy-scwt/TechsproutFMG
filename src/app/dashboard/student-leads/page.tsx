@@ -25,7 +25,7 @@ async function StudentLeadsPage({ searchParams }: any) {
          "Content-Type": "application/json",
          Authorization: `Bearer ${session?.user.token}`,
       },
-      next: { revalidate: 5, tags: ["studentLeadsListing"] },
+      next: { revalidate: 0, tags: ["studentLeadsListing"] },
    });
 
    const resp = await res.json();

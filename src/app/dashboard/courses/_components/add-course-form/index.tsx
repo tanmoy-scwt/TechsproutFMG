@@ -288,7 +288,7 @@ function AddCourseForm({ editId, subscriptionTaken }: { editId?: string | undefi
    const getCurrencies = async () => {
       try {
          const { data } = await ServerFetch("/currency/listing", {
-            next: { revalidate: 5, tags: ["currencies"] },
+            next: { revalidate: 0, tags: ["currencies"] },
          });
          const temp = { ...formData };
 

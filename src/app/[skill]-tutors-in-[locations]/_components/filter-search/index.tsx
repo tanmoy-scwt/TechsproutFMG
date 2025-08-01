@@ -17,13 +17,13 @@ import RatingLabel from "./rating-label";
 import { ServerFetch } from "@/actions/server-fetch";
 import { useRouter } from "next/navigation";
 
-import { DateRange, RangeKeyDict  } from "react-date-range";
+import { DateRange, RangeKeyDict } from "react-date-range";
 
 type StrictRange = {
-    startDate: Date;
-    endDate: Date;
-    key: string;
-  };
+   startDate: Date;
+   endDate: Date;
+   key: string;
+};
 
 
 
@@ -34,25 +34,25 @@ interface FilterSearchProps {
       name: string;
    }>;
    totalResults: number;
-   searchskill : string;
+   searchskill: string;
    filterdata: Array<{
-        id: string | number;
-        name: string;
-    }>;
-    filtertype : string;
-    location: string;
-    t: string;
-    findmode : string;
-    skillname : string;
+      id: string | number;
+      name: string;
+   }>;
+   filtertype: string;
+   location: string;
+   t: string;
+   findmode: string;
+   skillname: string;
 }
 interface FilterList {
-    locations: Array<{ id: string; label: string; value: string }>;
-    teachingModes: Array<{ id: string; label: string; value: string }>;
-    batchTypes: Array<{ id: string; label: string; value: string }>;
+   locations: Array<{ id: string; label: string; value: string }>;
+   teachingModes: Array<{ id: string; label: string; value: string }>;
+   batchTypes: Array<{ id: string; label: string; value: string }>;
 }
 
 interface ApiResponse {
-    data: FilterList;
+   data: FilterList;
 }
 
 function FilterSearch({ children, suggestions, totalResults, searchskill, filterdata, location, t, filtertype, findmode, skillname }: FilterSearchProps) {
@@ -78,28 +78,28 @@ function FilterSearch({ children, suggestions, totalResults, searchskill, filter
    const [selectedArea, setSelectedArea] = useState<string | null>(null);
 
    const [state, setState] = useState<StrictRange[]>([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
+      {
+         startDate: new Date(),
+         endDate: new Date(),
+         key: "selection",
+      },
+   ]);
 
 
-    useEffect(() => {
-        setSearchKeyVal(searchskill || "");
-        //setSelectedLocation(location || null);
-        if(t?.toString() === "1"){
-            setSelectedTeachingMode("Offline");
-        }
-        if(t?.toString() === "2"){
-            setSelectedTeachingMode("Online");
-        }
-        setModeType(t || "");
+   useEffect(() => {
+      setSearchKeyVal(searchskill || "");
+      //setSelectedLocation(location || null);
+      if (t?.toString() === "1") {
+         setSelectedTeachingMode("Offline");
+      }
+      if (t?.toString() === "2") {
+         setSelectedTeachingMode("Online");
+      }
+      setModeType(t || "");
 
-        //setSelectedArea(findmode);
+      //setSelectedArea(findmode);
 
-    }, [searchskill, location, t]);
+   }, [searchskill, location, t]);
 
    const toggleFilters = () => {
       if (window.innerWidth >= breakPoint.current) {
@@ -125,7 +125,7 @@ function FilterSearch({ children, suggestions, totalResults, searchskill, filter
    useEffect(() => {
       if (initialRender.current) {
          initialRender.current = false;
-         return () => {};
+         return () => { };
       }
 
       if (showFilters) {
@@ -139,132 +139,132 @@ function FilterSearch({ children, suggestions, totalResults, searchskill, filter
       };
    }, [showFilters]);
 
-    const getFilterData = async () => {
-        //console.log("helloooo", findmode, skillname)
-        let url: string;
-        // if(selectedArea !== "online"){
-        //     url = `https://simpreative.in/find-my-guru/api/FilterParameterList/${filtertype}`;
-        // }else{
-        //     url = `https://simpreative.in/find-my-guru/api/FilterParameterList/${filtertype}`;
-        // }
+   const getFilterData = async () => {
+      //console.log("helloooo", findmode, skillname)
+      let url: string;
+      // if(selectedArea !== "online"){
+      //     url = `https://simpreative.in/find-my-guru/api/FilterParameterList/${filtertype}`;
+      // }else{
+      //     url = `https://simpreative.in/find-my-guru/api/FilterParameterList/${filtertype}`;
+      // }
 
-        if(findmode){
-            const formattedSkillName = skillname.replace(/-/g, " ");
-            url = `/FilterParameterList/${filtertype}?city_name=${findmode}&skill=${encodeURIComponent(formattedSkillName)}`;
-            //url = `/FilterParameterList/${filtertype}?city_name=${findmode}`;
-        }else{
-            url = `/FilterParameterList/${filtertype}`;
-        }
-        console.log("url",url)
-        const result: ApiResponse = await ServerFetch(url, {
-            headers: { "Content-Type": "application/json" },
-            next: { revalidate: 5 },
-        });
-    //     const res = await fetch(url);
-    //   const result: ApiResponse = await res.json();
+      if (findmode) {
+         const formattedSkillName = skillname.replace(/-/g, " ");
+         url = `/FilterParameterList/${filtertype}?city_name=${findmode}&skill=${encodeURIComponent(formattedSkillName)}`;
+         //url = `/FilterParameterList/${filtertype}?city_name=${findmode}`;
+      } else {
+         url = `/FilterParameterList/${filtertype}`;
+      }
+      console.log("url", url)
+      const result: ApiResponse = await ServerFetch(url, {
+         headers: { "Content-Type": "application/json" },
+         next: { revalidate: 0 },
+      });
+      //     const res = await fetch(url);
+      //   const result: ApiResponse = await res.json();
 
-        console.log("object",result)
-        setFilterList(result?.data);
+      console.log("object", result)
+      setFilterList(result?.data);
 
    };
 
-    useEffect(() => {
-            getFilterData();
-    }, []);
+   useEffect(() => {
+      getFilterData();
+   }, []);
 
-    const handleKeyPress = (e:any) => {
-        if (e.key === 'Enter') {
-            updateURL();
-        }
-      };
+   const handleKeyPress = (e: any) => {
+      if (e.key === 'Enter') {
+         updateURL();
+      }
+   };
 
-      const updateURL = () => {
-            const params = new URLSearchParams();
-            if (searchKeyVal) params.set("search_key", searchKeyVal.toLowerCase());
-            if(selectedArea){
-                if (selectedArea) params.set("location", selectedArea?.toLowerCase());
-                const formattedSkillName = skillname.replace(/_/g, " ");
-                params.set("skill", formattedSkillName)
-            }
+   const updateURL = () => {
+      const params = new URLSearchParams();
+      if (searchKeyVal) params.set("search_key", searchKeyVal.toLowerCase());
+      if (selectedArea) {
+         if (selectedArea) params.set("location", selectedArea?.toLowerCase());
+         const formattedSkillName = skillname.replace(/_/g, " ");
+         params.set("skill", formattedSkillName)
+      }
 
-            if (selectedTeachingMode) params.set("mode", selectedTeachingMode);
-            if (modeType) params.set("t", modeType);
-            if (selectedBatchType) params.set("batch", selectedBatchType);
-            if (selectedStar) params.set("rating", selectedStar);
-            if (sortValue) params.set("sortby", sortValue);
-            if (startdate) params.set("startdate", startdate);
-            if (enddate) params.set("enddate", enddate);
-            setShowFilters(false);
+      if (selectedTeachingMode) params.set("mode", selectedTeachingMode);
+      if (modeType) params.set("t", modeType);
+      if (selectedBatchType) params.set("batch", selectedBatchType);
+      if (selectedStar) params.set("rating", selectedStar);
+      if (sortValue) params.set("sortby", sortValue);
+      if (startdate) params.set("startdate", startdate);
+      if (enddate) params.set("enddate", enddate);
+      setShowFilters(false);
 
-            router.push(`?${params.toString()}`);
-        };
+      router.push(`?${params.toString()}`);
+   };
 
-        useEffect(() => {
-            updateURL();
+   useEffect(() => {
+      updateURL();
 
-        }, [selectedLocation, selectedTeachingMode, selectedBatchType, searchKeyVal, selectedStar, modeType, sortValue, selectedArea]);
+   }, [selectedLocation, selectedTeachingMode, selectedBatchType, searchKeyVal, selectedStar, modeType, sortValue, selectedArea]);
 
-        const getActiveFilterCount = () => {
-            const filters = [selectedTeachingMode, selectedBatchType, selectedStar, selectedArea];
-            return filters.filter((filter) => filter !== null).length;
-        };
+   const getActiveFilterCount = () => {
+      const filters = [selectedTeachingMode, selectedBatchType, selectedStar, selectedArea];
+      return filters.filter((filter) => filter !== null).length;
+   };
 
-        const handleSortChange = (value: string) => {
-            setSortValue(value);
-        };
+   const handleSortChange = (value: string) => {
+      setSortValue(value);
+   };
 
-        const handleDateChange = (rangesByKey: RangeKeyDict) => {
-            const selection = rangesByKey.selection; // Access the selection key directly
+   const handleDateChange = (rangesByKey: RangeKeyDict) => {
+      const selection = rangesByKey.selection; // Access the selection key directly
 
-            if (!selection) {
-              console.error("Selection range not found.");
-              return;
-            }
+      if (!selection) {
+         console.error("Selection range not found.");
+         return;
+      }
 
-            const startDate = selection.startDate ?? new Date(); // Fallback to current date
-            const endDate = selection.endDate ?? new Date();     // Fallback to current date
+      const startDate = selection.startDate ?? new Date(); // Fallback to current date
+      const endDate = selection.endDate ?? new Date();     // Fallback to current date
 
-            const formattedStartDate = formatDate(startDate);
-            const formattedEndDate = formatDate(endDate);
-            console.log(formattedStartDate,formattedEndDate)
+      const formattedStartDate = formatDate(startDate);
+      const formattedEndDate = formatDate(endDate);
+      console.log(formattedStartDate, formattedEndDate)
 
-            const params = new URLSearchParams();
-            if (searchKeyVal) params.set("search_key", searchKeyVal.toLowerCase());
-            if (selectedLocation) params.set("location", selectedLocation.toLowerCase());
-            if (selectedTeachingMode) params.set("mode", selectedTeachingMode);
-            if (modeType) params.set("t", modeType);
-            if (selectedBatchType) params.set("batch", selectedBatchType);
-            if (selectedStar) params.set("rating", selectedStar);
-            if (sortValue) params.set("sortby", sortValue);
-            if (formattedStartDate) params.set("startdate", formattedStartDate);
-            if (formattedEndDate) params.set("enddate", formattedEndDate);
-            setShowFilters(false);
-            router.push(`?${params.toString()}`);
+      const params = new URLSearchParams();
+      if (searchKeyVal) params.set("search_key", searchKeyVal.toLowerCase());
+      if (selectedLocation) params.set("location", selectedLocation.toLowerCase());
+      if (selectedTeachingMode) params.set("mode", selectedTeachingMode);
+      if (modeType) params.set("t", modeType);
+      if (selectedBatchType) params.set("batch", selectedBatchType);
+      if (selectedStar) params.set("rating", selectedStar);
+      if (sortValue) params.set("sortby", sortValue);
+      if (formattedStartDate) params.set("startdate", formattedStartDate);
+      if (formattedEndDate) params.set("enddate", formattedEndDate);
+      setShowFilters(false);
+      router.push(`?${params.toString()}`);
 
-            setStartdate(formattedStartDate);
-            setEnddate(formattedEndDate);
+      setStartdate(formattedStartDate);
+      setEnddate(formattedEndDate);
 
-            setState([
-              {
-                startDate,
-                endDate,
-                key: "selection",
-              },
-            ]);
-          };
+      setState([
+         {
+            startDate,
+            endDate,
+            key: "selection",
+         },
+      ]);
+   };
 
-    const formatDate = (date: Date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-    };
+   const formatDate = (date: Date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+   };
 
    return (
       <div className="container filter-results">
          <FilterButton count={getActiveFilterCount()} className="filter-results__sec-1" onClick={toggleFilters} />
          <InputFilter onKeyDown={handleKeyPress} onChange={(e) => setSearchKeyVal(e.target.value)} value={searchKeyVal} placeholder="Search..." id="input-filter" containerClassName="filter-results__sec-2" />
-         <SortBy className="filter-results__sec-3"  onSortChange={handleSortChange} filtertype={filtertype} />
+         <SortBy className="filter-results__sec-3" onSortChange={handleSortChange} filtertype={filtertype} />
          <section className="filter-results__sec-others">
             {/* <SuggestionsScroll suggestions={suggestions} location={selectedLocation ?? null}  modetype={modeType} /> */}
             {searchKeyVal && <p className="filter-results__total-results">
@@ -277,88 +277,88 @@ function FilterSearch({ children, suggestions, totalResults, searchskill, filter
                <Image src="/img/icons/close.svg" alt="Close" width={40} height={40} />
             </div>
             {filtertype !== "webinar" &&
-            <FilterContainer title="Ratings">
-               <InputSingleCheckbox
-                  name="filter-ratings"
-                  value={selectedStar}
-                  onChange={setSelectedStar}
-                  items={[
-                     {
-                        id: "filter-ratings5",
-                        label: <RatingLabel rating={5} />,
-                        value: "5",
-                     },
-                     {
-                        id: "filter-ratings4",
-                        label: <RatingLabel rating={4} />,
-                        value: "4",
-                     },
-                     {
-                        id: "filter-ratings3",
-                        label: <RatingLabel rating={3} />,
-                        value: "3",
-                     },
-                     {
-                        id: "filter-ratings2",
-                        label: <RatingLabel rating={2} />,
-                        value: "2",
-                     },
-                     {
-                        id: "filter-ratings1",
-                        label: <RatingLabel rating={1} />,
-                        value: "1",
-                     },
-                  ]}
-               />
-            </FilterContainer>
+               <FilterContainer title="Ratings">
+                  <InputSingleCheckbox
+                     name="filter-ratings"
+                     value={selectedStar}
+                     onChange={setSelectedStar}
+                     items={[
+                        {
+                           id: "filter-ratings5",
+                           label: <RatingLabel rating={5} />,
+                           value: "5",
+                        },
+                        {
+                           id: "filter-ratings4",
+                           label: <RatingLabel rating={4} />,
+                           value: "4",
+                        },
+                        {
+                           id: "filter-ratings3",
+                           label: <RatingLabel rating={3} />,
+                           value: "3",
+                        },
+                        {
+                           id: "filter-ratings2",
+                           label: <RatingLabel rating={2} />,
+                           value: "2",
+                        },
+                        {
+                           id: "filter-ratings1",
+                           label: <RatingLabel rating={1} />,
+                           value: "1",
+                        },
+                     ]}
+                  />
+               </FilterContainer>
             }
             {findmode !== "online" &&
-            <FilterContainer title="Area">
-                {filterList?.locations &&
-               <InputSingleCheckbox
-                  name="filter-locations"
-                  items={filterList?.locations}
-                  value={selectedArea}
-                  onChange={(value) => {
-                    setSelectedArea(value); // Update the selectedArea state
-                  }}
-               />
-               }
-            </FilterContainer>
+               <FilterContainer title="Area">
+                  {filterList?.locations &&
+                     <InputSingleCheckbox
+                        name="filter-locations"
+                        items={filterList?.locations}
+                        value={selectedArea}
+                        onChange={(value) => {
+                           setSelectedArea(value); // Update the selectedArea state
+                        }}
+                     />
+                  }
+               </FilterContainer>
             }
             {(filtertype == "course" || filtertype == "webinar") &&
-                <FilterContainer title="Teaching Mode">
-                {filterList?.teachingModes &&
-                <InputSingleCheckbox
-                    name="filter-teaching-mode"
-                    items={filterList?.teachingModes}
-                    value={selectedTeachingMode}
-                    onChange={setSelectedTeachingMode}
-                />
-                }
-                </FilterContainer>
+               <FilterContainer title="Teaching Mode">
+                  {filterList?.teachingModes &&
+                     <InputSingleCheckbox
+                        name="filter-teaching-mode"
+                        items={filterList?.teachingModes}
+                        value={selectedTeachingMode}
+                        onChange={setSelectedTeachingMode}
+                     />
+                  }
+               </FilterContainer>
             }
             {filtertype == "course" &&
-                <FilterContainer title="Batch Type">
-                {filterList?.batchTypes &&
-                <InputSingleCheckbox
-                    name="filter-batch-type"
-                    items={filterList?.batchTypes}
-                    value={selectedBatchType}
-                    onChange={setSelectedBatchType}
-                />
-                }
-                </FilterContainer>
+               <FilterContainer title="Batch Type">
+                  {filterList?.batchTypes &&
+                     <InputSingleCheckbox
+                        name="filter-batch-type"
+                        items={filterList?.batchTypes}
+                        value={selectedBatchType}
+                        onChange={setSelectedBatchType}
+                     />
+                  }
+               </FilterContainer>
             }
             {filtertype == "webinar" &&
-            <FilterContainer title="Date Range">
-            <DateRange
-                editableDateInputs={true}
-                onChange={handleDateChange}
-                moveRangeOnFirstSelection={false}
-                ranges={state}
-                />
-            </FilterContainer>
+               <FilterContainer title="Date Range">
+                  <DateRange
+                     editableDateInputs={true}
+                     onChange={handleDateChange}
+                     moveRangeOnFirstSelection={false}
+                     ranges={state}
+                  />
+               </FilterContainer>
             }
          </section>
          <section className="filter-results__sec-5">{children}</section>

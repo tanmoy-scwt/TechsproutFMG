@@ -19,7 +19,7 @@ async function CoursesPage({ searchParams }: any) {
          "Content-Type": "application/json",
          Authorization: `Bearer ${session?.user.token}`,
       },
-      next: { revalidate: 5, tags: ["userCoursesListing"] },
+      next: { revalidate: 0, tags: ["userCoursesListing"] },
    });
 
    const resp = await res.json();

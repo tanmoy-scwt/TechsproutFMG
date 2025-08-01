@@ -11,38 +11,38 @@ import Loading from "@/components/loading";
 
 async function WebinarsPage({ searchParams }: any) {
    const session = await auth();
-//    const subscriptionData: SubscriptionDetailsSectionData = {
-//       data: {
-//          last_recharge: "2024-11-04T06:56:32.862Z",
-//          remainingCoins: 500,
-//          expiry_date: "2024-12-04T06:56:32.862Z",
-//          package_name: "Premium",
-//          status: "Active",
-//       },
-//    };
+   //    const subscriptionData: SubscriptionDetailsSectionData = {
+   //       data: {
+   //          last_recharge: "2024-11-04T06:56:32.862Z",
+   //          remainingCoins: 500,
+   //          expiry_date: "2024-12-04T06:56:32.862Z",
+   //          package_name: "Premium",
+   //          status: "Active",
+   //       },
+   //    };
 
-interface SubscriptionDetailsSectionData {
-    //    data: { package_name: string; last_recharge: string; expiry_date: string; remainingCoins: number; status: string };
-            data: {
-                f_name: string;
-                user_type: string;
-                currentSubscription: {
-                subscription_purchase_id: number;
-                package_name: string;
-                last_recharge: string;
-                expiry_date: string;
-                };
-                remainingCoins: number;
-                status: string;
-                upComingSubscriptionDtls?: {
-                subscription_purchase_id: number;
-                package_name: string;
-                last_recharge: string;
-                expiry_date: string;
-                start_date: string;
-                };
-            };
-        }
+   interface SubscriptionDetailsSectionData {
+      //    data: { package_name: string; last_recharge: string; expiry_date: string; remainingCoins: number; status: string };
+      data: {
+         f_name: string;
+         user_type: string;
+         currentSubscription: {
+            subscription_purchase_id: number;
+            package_name: string;
+            last_recharge: string;
+            expiry_date: string;
+         };
+         remainingCoins: number;
+         status: string;
+         upComingSubscriptionDtls?: {
+            subscription_purchase_id: number;
+            package_name: string;
+            last_recharge: string;
+            expiry_date: string;
+            start_date: string;
+         };
+      };
+   }
 
    const { page, filter } = searchParams;
    const key = page + filter;
@@ -56,7 +56,7 @@ interface SubscriptionDetailsSectionData {
          "Content-Type": "application/json",
          Authorization: `Bearer ${session?.user.token}`,
       },
-      next: { revalidate: 5, tags: ["userWebinarsListing"] },
+      next: { revalidate: 0, tags: ["userWebinarsListing"] },
    });
 
    const resp = await res.json();

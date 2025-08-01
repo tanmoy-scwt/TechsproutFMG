@@ -18,7 +18,7 @@ async function ProfilePage() {
          "Content-Type": "application/json",
          Authorization: `Bearer ${session?.user.token}`,
       },
-      next: { revalidate: 5, tags: ["profileDetails"] },
+      next: { revalidate: 0, tags: ["profileDetails"] },
    });
 
    const profileData: UserProfile = (await res.json())?.data;
