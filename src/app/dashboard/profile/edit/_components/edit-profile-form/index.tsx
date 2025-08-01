@@ -21,6 +21,7 @@ import GoogleAddressAutofill from "@/components/google-address-autofill";
 import Tiptap from "@/components/tiptap/Tiptap";
 import dynamic from "next/dynamic";
 import { MultiValue } from 'react-select'
+import Skeleton from "@/components/skeleton";
 const Select = dynamic(() => import("react-select"), { ssr: false })
 interface EditProfileFormProps {
    data: UserProfile;
@@ -73,6 +74,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
    const [allLanguages, setAllLanguages] = useState<Language[]>([]);
 
    const [nselectedLanguage, setNSelectedLanguage] = useState<MultiValue<SelectOption>>([]);
+   const [nselectedSkills, setNSelectedSkills] = useState<MultiValue<SelectOption>>([]);
 
    const [submitting, setSubmitting] = useState(false);
    const [bioEditor, setBioEditor] = useState<UserBio>({ bio: data.bio });
@@ -200,6 +202,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
    };
 
 
+   console.log(suggestions.language.loading, "asdjaslkdjlaskjdlkasjlkdjaslkdjlkas lsajlkd asljdklasjdl asjdlkasjdljaslj");
 
    const handleLanguageInputChange = async (query: string) => {
       setSuggestions((prev) => ({
@@ -273,7 +276,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
 
       return input.map((i) => `${i.value}`);
    };
-
+   const [isNSelectLoading, setNSelectLoading] = useState<boolean>(true)
    const getAllMasterData = async () => {
       try {
          const [qualificationRes, skillRes, languageRes] = await Promise.all([
@@ -298,46 +301,20 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
          setAllQualifications(Array.isArray(qualificationRes.data) ? qualificationRes.data : []);
          setAllSkills(Array.isArray(skillRes.data) ? skillRes.data : []);
          setAllLanguages(Array.isArray(languageRes.data) ? languageRes.data : []);
+         setNSelectLoading(false)
       } catch (error) {
          console.error("Error fetching master data:", error);
          setAllQualifications([]);
          setAllSkills([]);
          setAllLanguages([]);
+      } finally {
+         setNSelectLoading(false)
       }
    };
 
    useEffect(() => {
       getAllMasterData();
    }, []);
-
-
-   //    const validateMultipleInputs = () => {
-   //       const values = {
-   //          qualification: genrateMultipleInputValueArray(suggestions.qualification.selected),
-   //          skill: genrateMultipleInputValueArray(suggestions.skill.selected),
-   //          language: genrateMultipleInputValueArray(suggestions.language.selected),
-   //       };
-   //       let isValid = true;
-   //       let errorItem = "";
-
-   //       for (const value in values) {
-   //          const val = value as "skill" | "language";
-   //          if (values[val]?.length === 0) {
-   //             isValid = false;
-   //             if (!errorItem) {
-   //                errorItem = val;
-   //             }
-   //             setSuggestions((prev) => ({ ...prev, [val]: { ...prev[val], error: "This is a required field." } }));
-   //          }
-   //       }
-   //       if (errorItem) {
-   //         console.log(errorItem);
-   //          suggestionsRef.current?.[errorItem].focus();
-   //          suggestionsRef.current?.[errorItem].scrollIntoView({ behavior: "smooth", block: "center" });
-   //          errorItem = "";
-   //       }
-   //       return { isValid, values };
-   //    };
 
    const validateMultipleInputs = () => {
       const values = {
@@ -460,8 +437,9 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
             user_id: session.user.userId,
             year_of_exp: values.year_of_exp ? +values.year_of_exp : 0,
             qualification: JSON.stringify(data.qualification),
-            skill: JSON.stringify(data.skill),
+            // skill: JSON.stringify(data.skill),
             // language: JSON.stringify(data.language) || JSON.stringify(nselectedLanguage),
+            skill: JSON.stringify(nselectedSkills?.map((option) => option.value)),
             language: JSON.stringify(nselectedLanguage?.map((option) => option.value)),
          };
          console.log("dataToSubmit", dataToSubmit);
@@ -560,10 +538,15 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
             label: lang.label,
             value: String(lang.value),
          }));
+         const allSelectedSkills = suggestions.skill.selected.map((skill) => ({
+            label: skill.label,
+            value: String(skill.value),
+         }));
          setNSelectedLanguage(allSelectedLanguage);
+         setNSelectedSkills(allSelectedSkills);
       }
 
-   }, [suggestions, allLanguages]);
+   }, [suggestions, allLanguages, allSkills]);
 
    return (
       <form
@@ -897,96 +880,44 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                   </div>
                )}
                <div>
-                  <AutoFillInput
-                     label="Skills"
-                     id="skill"
-                     suggestions={suggestions.skill.value}
-                     selectedSuggestions={suggestions.skill.selected}
-                     onSuggestionRemove={(suggestion) => {
-                        const filteredSelectedSkill = suggestions.skill.selected.filter(
-                           (item) => item.value !== suggestion.value
-                        );
-                        setSuggestions((prev) => ({
-                           ...prev,
-                           skill: {
-                              ...prev.skill,
-                              selected: filteredSelectedSkill,
-                           },
-                        }));
-                     }}
-                     onSuggestionSelect={(skill) => {
-                        const index = suggestions.skill.selected.findIndex((item) => item.value === skill.value);
-                        if (index >= 0) return;
-                        setSuggestions((prev) => ({
-                           ...prev,
-                           skill: {
-                              ...prev.skill,
-                              selected: [...prev.skill.selected, skill],
-                              error: "",
-                           },
-                        }));
-                     }}
-                     onInputValueChange={(value) => {
-                        handleSkillInputChange(value);
-                     }}
-                     loadingSuggestions={suggestions.skill.loading}
-                     ref={(ref: HTMLInputElement) => {
-                        suggestionsRef.current.skill = ref;
-                     }}
-                  />
-                  {suggestions.skill.error && <p className="error">{suggestions.skill.error}</p>}
+                  <label htmlFor={"skill"} className="label">
+                     {"Skills"}
+                  </label>
+                  {isNSelectLoading ? (
+                     <Skeleton height={40} />) :
+                     (
+                        <>
+                           <Select
+                              isMulti
+                              value={nselectedSkills}
+                              onChange={(selected) => setNSelectedSkills(selected as MultiValue<SelectOption>)}
+                              options={allSkills}
+                              placeholder={"Select Skills"}
+                              required
+                           />
+                           {suggestions.skill.error && <p className="error">{suggestions.skill.error}</p>}
+                        </>)
+                  }
                </div>
-               {/* <div>
-                  <AutoFillInput
-                     label="Language"
-                     id="language"
-                     suggestions={suggestions.language.value}
-                     selectedSuggestions={suggestions.language.selected}
-                     onSuggestionRemove={(suggestion) => {
-                        const filteredSelectedLanguage = suggestions.language.selected.filter(
-                           (item) => item.value !== suggestion.value
-                        );
-                        setSuggestions((prev) => ({
-                           ...prev,
-                           language: {
-                              ...prev.language,
-                              selected: filteredSelectedLanguage,
-                           },
-                        }));
-                     }}
-                     onSuggestionSelect={(language) => {
-                        const index = suggestions.language.selected.findIndex((item) => item.value === language.value);
-                        if (index >= 0) return;
-                        setSuggestions((prev) => ({
-                           ...prev,
-                           language: {
-                              ...prev.language,
-                              selected: [...prev.language.selected, language],
-                              error: "",
-                           },
-                        }));
-                     }}
-                     onInputValueChange={(value) => {
-                        handleLanguageInputChange(value);
-                     }}
-                     loadingSuggestions={suggestions.language.loading}
-                     ref={(ref: HTMLInputElement) => {
-                        suggestionsRef.current.language = ref;
-                     }}
-                  />
-                  {suggestions.language.error && <p className="error">{suggestions.language.error}</p>}
-               </div> */}
                <div>
                   <label htmlFor={"language"} className="label">
                      {"Language"}
                   </label>
-                  <Select
-                     isMulti
-                     value={nselectedLanguage}
-                     onChange={(selected) => setNSelectedLanguage(selected as MultiValue<SelectOption>)}
-                     options={allLanguages}
-                     placeholder={"Select Language"}
-                  />
+                  {isNSelectLoading ? (
+                     <Skeleton height={40} />) :
+                     (
+                        <>
+                           <Select
+                              isMulti
+                              value={nselectedLanguage}
+                              onChange={(selected) => setNSelectedLanguage(selected as MultiValue<SelectOption>)}
+                              options={allLanguages}
+                              placeholder={"Select Language"}
+                              required
+                           />
+                           {suggestions.language.error && <p className="error">{suggestions.language.error}</p>}
+                        </>
+                     )}
                </div>
                <div>
                   <label htmlFor="experience" className="label">

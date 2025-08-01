@@ -3,15 +3,21 @@ import InputWithCharacterLimit from "@/components/input-with-character-limit";
 import InputWithEndSelect from "@/components/input-with-end-select";
 import InputSingleCheckbox from "@/components/input-single-checkbox";
 import InputCheckBox from "@/components/input-checkbox";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FormDataType } from "@/types";
 import SuggestiveInput from "@/components/suggestions-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ServerFetch } from "@/actions/server-fetch";
+import dynamic from "next/dynamic";
+import { MultiValue } from "react-select";
+import Skeleton from "@/components/skeleton";
+const Select2 = dynamic(() => import("react-select"), { ssr: false })
 interface CategoryOption {
    label: string;
    value: string | number;
 }
+
+type SelectOption = { value: string; label: string };
 function AddCourseFormStep1({
    formData,
    onInpChange,
@@ -33,7 +39,8 @@ function AddCourseFormStep1({
    }) => void;
    dataLoading?: boolean;
 }) {
-   const [loadingKey, setLoadingKey] = useState<string | null>(null);
+   // const [loadingKey, setLoadingKey] = useState<string | null>(null);
+   const [loadingSelect, setLoadingSelect] = useState<boolean>(true);
 
    const listingEndpoints = {
       category_id: "/category",
@@ -41,30 +48,61 @@ function AddCourseFormStep1({
       skill: "/skill",
    };
 
-   const fetchSuggestions = useCallback(
-      async (query: string, name: string): Promise<{ value: string; label: string }[]> => {
-         if (!query) {
-            return [];
-         }
-         setLoadingKey(name);
-         try {
-            const { data } = await ServerFetch(
-               `${listingEndpoints[name as keyof typeof listingEndpoints]}/listing?key=${query}`
-            );
+   // const fetchSuggestions = useCallback(
+   //    async (query: string, name: string): Promise<{ value: string; label: string }[]> => {
+   //       if (!query) {
+   //          return [];
+   //       }
+   //       setLoadingKey(name);
+   //       try {
+   //          const { data } = await ServerFetch(
+   //             `${listingEndpoints[name as keyof typeof listingEndpoints]}/listing?key=${query}`
+   //          );
 
-            return data.map((item: any) => ({
-               value: String(item.value),
-               label: item.label,
-            }));
-         } catch (error) {
-            console.log(error);
-            return [];
-         } finally {
-            setLoadingKey(null);
-         }
-      },
-      []
-   );
+   //          return data.map((item: any) => ({
+   //             value: String(item.value),
+   //             label: item.label,
+   //          }));
+   //       } catch (error) {
+   //          console.log(error);
+   //          return [];
+   //       } finally {
+   //          setLoadingKey(null);
+   //       }
+   //    },
+   //    []
+   // );
+
+   const [allSkills, setAllSkills] = useState<{ value: string; label: string }[]>([])
+   const [allLanguage, setAllLanguage] = useState<{ value: string; label: string }[]>([])
+   const fetchSelectData = async (
+      name: string,
+      setter: (options: { value: string; label: string }[]) => void
+   ) => {
+      setLoadingSelect(true);
+      try {
+         const { data } = await ServerFetch(`${listingEndpoints[name as keyof typeof listingEndpoints]}/listing`);
+         const options = data.map((item: any) => ({
+            value: String(item.value),
+            label: item.label,
+         }));
+
+         setter(options);
+      } catch (error) {
+         console.error(error);
+         setter([]);
+      } finally {
+         setLoadingSelect(false);
+      }
+   };
+
+   useEffect(() => {
+      fetchSelectData("skill", setAllSkills)
+      fetchSelectData("language", setAllLanguage)
+   }, [])
+
+   console.log(allSkills, allLanguage, "hi hi ho ho hoa haa haa");
+
 
    return (
       <div className="step1__form">
@@ -99,7 +137,7 @@ function AddCourseFormStep1({
             </select>
          </div>
 
-         <div className="acf__form--items">
+         {/* <div className="acf__form--items">
             <SuggestiveInput
                id="skill"
                name="skill"
@@ -118,8 +156,9 @@ function AddCourseFormStep1({
                   }[]
                }
             />
-         </div>
-         <div className="acf__form--items">
+         </div> */}
+
+         {/* <div className="acf__form--items">
             <SuggestiveInput
                id="language"
                name="language"
@@ -139,6 +178,82 @@ function AddCourseFormStep1({
                   }[]
                }
             />
+         </div> */}
+         <div>
+            <label htmlFor={"skill"} className="label">
+               {"Skills"}
+            </label>
+            {loadingSelect ? (<Skeleton height={40} />) : (
+               <>
+                  <Select2
+                     id="skill"
+                     name="skill"
+                     options={allSkills}
+                     isMulti
+                     placeholder="Select skills"
+                     value={
+                        formData.skill?.value
+                           ? (allSkills ?? []).filter((option) =>
+                              Array.isArray(formData.skill.value) &&
+                              (formData.skill.value as string[]).includes(String(option.value))
+                           )
+                           : []
+                     }
+                     onChange={(newValue: unknown, actionMeta: any) => {
+                        const selected = newValue as MultiValue<{ value: any; label: any }>;
+                        const selectedValues = selected.map((opt) => opt.value);
+                        onInpChange({
+                           target: {
+                              name: "skill",
+                              value: selectedValues, // pass string[] to state
+                           }
+                        });
+                     }}
+                     classNamePrefix="react-select"
+                     className={
+                        formData.skill?.isValid === false ? "border border-red-500 rounded" : ""
+                     }
+                  />
+               </>
+            )}
+         </div>
+         <div>
+            <label htmlFor={"language"} className="label">
+               {"Language"}
+            </label>
+            {loadingSelect ? (<Skeleton height={40} />) : (
+               <>
+                  <Select2
+                     id="language"
+                     name="language"
+                     options={allLanguage}
+                     isMulti
+                     placeholder="Select Language"
+                     value={
+                        formData.language?.value
+                           ? (allLanguage ?? []).filter((option) =>
+                              Array.isArray(formData.language.value) &&
+                              (formData.language.value as string[]).includes(String(option.value))
+                           )
+                           : []
+                     }
+                     onChange={(newValue: unknown, actionMeta: any) => {
+                        const selected = newValue as MultiValue<{ value: any; label: any }>;
+                        const selectedValues = selected.map((opt) => opt.value);
+                        onInpChange({
+                           target: {
+                              name: "language",
+                              value: selectedValues, // pass string[] to state
+                           }
+                        });
+                     }}
+                     classNamePrefix="react-select"
+                     className={
+                        formData.language?.isValid === false ? "border border-red-500 rounded" : ""
+                     }
+                  />
+               </>
+            )}
          </div>
          <div className="acf__form--items">
             <label htmlFor="year_of_exp" className="label">
@@ -153,7 +268,7 @@ function AddCourseFormStep1({
                onChange={onInpChange}
                name="year_of_exp"
                step="0.1"
-                min="0"
+               min="0"
                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                   if (Number(e.target.value) < 0) e.target.value = "";
                }}
