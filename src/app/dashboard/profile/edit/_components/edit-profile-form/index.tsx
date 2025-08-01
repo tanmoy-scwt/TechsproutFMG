@@ -75,6 +75,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
 
    const [nselectedLanguage, setNSelectedLanguage] = useState<MultiValue<SelectOption>>([]);
    const [nselectedSkills, setNSelectedSkills] = useState<MultiValue<SelectOption>>([]);
+   const [nselectedQualification, setNSelectedQualification] = useState<MultiValue<SelectOption>>([]);
 
    const [submitting, setSubmitting] = useState(false);
    const [bioEditor, setBioEditor] = useState<UserBio>({ bio: data.bio });
@@ -122,6 +123,8 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
       qualification: { loading: false, value: [], selected: data.qualification || [], error: "" },
    });
    const suggestionsRef = useRef<{ [key: string]: HTMLInputElement }>({});
+   console.log(suggestions, ":Sadjashdkjashd");
+
 
    const fetchStates = useCallback(async (value: string) => {
       try {
@@ -436,9 +439,10 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
          const dataToSubmit = {
             user_id: session.user.userId,
             year_of_exp: values.year_of_exp ? +values.year_of_exp : 0,
-            qualification: JSON.stringify(data.qualification),
+            // qualification: JSON.stringify(data.qualification),
             // skill: JSON.stringify(data.skill),
             // language: JSON.stringify(data.language) || JSON.stringify(nselectedLanguage),
+            qualification: JSON.stringify(nselectedQualification?.map((option) => option.value)),
             skill: JSON.stringify(nselectedSkills?.map((option) => option.value)),
             language: JSON.stringify(nselectedLanguage?.map((option) => option.value)),
          };
@@ -533,7 +537,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
       }
    }, [values.state]);
    useEffect(() => {
-      if (suggestions.language.selected && allLanguages?.length) {
+      if (suggestions.language.selected && allLanguages?.length && suggestions.skill.selected && suggestions.qualification.selected) {
          const allSelectedLanguage = suggestions.language.selected.map((lang) => ({
             label: lang.label,
             value: String(lang.value),
@@ -542,11 +546,22 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
             label: skill.label,
             value: String(skill.value),
          }));
+         const allSelectedQualification = suggestions.qualification.selected.map((qual) => ({
+            label: qual.label,
+            value: String(qual.value),
+         }));
+         console.log(allSelectedQualification, "hahahahah");
+         console.log(suggestions.qualification.selected);
+
+
          setNSelectedLanguage(allSelectedLanguage);
          setNSelectedSkills(allSelectedSkills);
+         setNSelectedQualification(allSelectedQualification);
       }
 
-   }, [suggestions, allLanguages, allSkills]);
+   }, [suggestions, allLanguages, allSkills, allQualifications]);
+   console.log(nselectedQualification, "nSele");
+
 
    return (
       <form
@@ -831,7 +846,7 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
 
             <h2 className="dash-subtitle">Skills and Qualification</h2>
             <div className="epf__info--container">
-               {data.user_type === "institute" ? (
+               {/* {data.user_type === "institute" ? (
                   ""
                ) : (
                   <div>
@@ -878,7 +893,27 @@ function EditProfileForm({ data, SubscriptionTakenTillNow, CourseExists }: EditP
                      />
                      {suggestions.qualification.error && <p className="error">{suggestions.qualification.error}</p>}
                   </div>
-               )}
+               )} */}
+               <div>
+                  <label htmlFor={"qualification"} className="label">
+                     {"Qualification"}
+                  </label>
+                  {isNSelectLoading ? (
+                     <Skeleton height={40} />) :
+                     (
+                        <>
+                           <Select
+                              isMulti
+                              value={nselectedQualification}
+                              onChange={(selected) => setNSelectedQualification(selected as MultiValue<SelectOption>)}
+                              options={allQualifications}
+                              placeholder={"Select Qualification"}
+                              required
+                           />
+                           {suggestions.qualification.error && <p className="error">{suggestions.qualification.error}</p>}
+                        </>)
+                  }
+               </div>
                <div>
                   <label htmlFor={"skill"} className="label">
                      {"Skills"}
