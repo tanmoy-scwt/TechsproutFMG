@@ -110,6 +110,7 @@ function AddCourseFormStep1({
             <InputWithCharacterLimit
                label="Course Name"
                id="course_name"
+               starActive={true}
                name="course_name"
                maxLength={50}
                placeholder="Enter course name"
@@ -120,13 +121,14 @@ function AddCourseFormStep1({
          </div>
 
          <div className="acf__form--items">
-            <label>Select Category</label>
+            <label>Select Category <span className="text-red-500 ml-1">*</span></label>
             <select
                id="category"
                name="category"
                className="input"
                value={formData.category_id?.value as string[]}
                onChange={CategorySelect}
+               required
             >
                <option value="">Select Category</option>
                {categoryData?.map((lang: CategoryOption) => (
@@ -181,7 +183,7 @@ function AddCourseFormStep1({
          </div> */}
          <div>
             <label htmlFor={"skill"} className="label">
-               {"Skills"}
+               {"Skills"} <span className="text-red-500 ml-1">*</span>
             </label>
             {loadingSelect ? (<Skeleton height={40} />) : (
                <>
@@ -219,7 +221,7 @@ function AddCourseFormStep1({
          </div>
          <div>
             <label htmlFor={"language"} className="label">
-               {"Language"}
+               {"Language"} <span className="text-red-500 ml-1">*</span>
             </label>
             {loadingSelect ? (<Skeleton height={40} />) : (
                <>
@@ -257,7 +259,7 @@ function AddCourseFormStep1({
          </div>
          <div className="acf__form--items">
             <label htmlFor="year_of_exp" className="label">
-               Experience (In Years)
+               Experience (In Years) <span className="text-red-500 ml-1">*</span>
             </label>
             <input
                type="number"
@@ -282,6 +284,7 @@ function AddCourseFormStep1({
             <InputWithEndSelect
                label="Course Duration"
                id="courseDuration"
+               starActive={true}
                selectOptions={
                   formData.duration_unit?.options as {
                      label: string;
@@ -334,6 +337,7 @@ function AddCourseFormStep1({
                   inputType="number"
                   placeholder="Enter fee"
                   onChange={onInpChange}
+                  starActive={true}
                   name="fee"
                   optionName="fee_unit"
                   optionValue={formData.fee_unit.value as string}

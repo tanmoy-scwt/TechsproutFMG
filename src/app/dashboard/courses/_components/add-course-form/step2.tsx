@@ -70,7 +70,7 @@ function AddCourseFormStep2({
          </div> */}
          <div className="acf__form--items">
             <label htmlFor="courseContent" className="label">
-               Course Content
+               Course Content <span className="text-red-500 ml-1">*</span>
             </label>
             {/* <textarea
                name="course_content"

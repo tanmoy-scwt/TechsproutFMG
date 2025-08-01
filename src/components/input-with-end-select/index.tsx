@@ -20,6 +20,7 @@ interface InputWithEndSelectProps {
   isValid?: boolean;
   optionIsValid?: boolean;
   value?: string;
+  starActive?: boolean;
 }
 
 export default function InputWithEndSelect({
@@ -34,6 +35,7 @@ export default function InputWithEndSelect({
   name,
   value,
   optionName,
+  starActive,
   isValid,
   optionIsValid,
 }: InputWithEndSelectProps) {
@@ -43,7 +45,7 @@ export default function InputWithEndSelect({
     <>
       {label && (
         <label htmlFor={id} className="label">
-          {label}
+          {label} {starActive && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
       <div className="flex rounded-lg shadow-sm shadow-black/5">
@@ -63,7 +65,7 @@ export default function InputWithEndSelect({
                 <span className="whitespace-nowrap text-ellipsis overflow-hidden w-full label">
                   {optionValue
                     ? selectOptions.find((item) => item.value === optionValue)
-                        ?.label
+                      ?.label
                     : selectPlaceholder}
                 </span>
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

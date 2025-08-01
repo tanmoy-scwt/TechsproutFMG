@@ -8,6 +8,7 @@ interface InputWithCharacterLimitProps extends ComponentProps<"input"> {
    maxLength?: number;
    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
    isValid?: boolean;
+   starActive?: boolean;
 }
 
 export default function InputWithCharacterLimit({
@@ -15,6 +16,7 @@ export default function InputWithCharacterLimit({
    maxLength = 50,
    onChange,
    label,
+   starActive,
    value: outerValue,
    isValid,
    ...props
@@ -32,6 +34,7 @@ export default function InputWithCharacterLimit({
          {label && (
             <label className="label" htmlFor={id}>
                {label}
+               {starActive && <span className="text-red-500 ml-1">*</span>}
             </label>
          )}
          <div className="relative">
@@ -43,7 +46,7 @@ export default function InputWithCharacterLimit({
                value={outerValue ?? value}
                aria-describedby="character-count"
                onChange={handleChange}
-               style={{ paddingRight: (counterContainerRef.current?.clientWidth || 50) + 10}}
+               style={{ paddingRight: (counterContainerRef.current?.clientWidth || 50) + 10 }}
                {...props}
             />
             <div
